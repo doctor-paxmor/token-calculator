@@ -249,12 +249,31 @@
             height: 50px;
             background: #1a1a1a;
             border-top: 1px solid #333;
-            display: flex;
+            display: none; /* Hidden by default */
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             color: #666;
             font-size: 12px;
             flex-shrink: 0;
+            padding: 0 12px;
+        }
+        
+        .ad-banner.visible {
+            display: flex;
+        }
+        
+        .dismiss-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .dismiss-btn:active {
+            background: #555;
         }
         
         @media (max-height: 700px) {
@@ -398,7 +417,8 @@
         
         <!-- Ad Banner -->
         <div class="ad-banner" id="adBanner">
-            Loading ads...
+            <span id="adContent">Loading ads...</span>
+            <button class="dismiss-btn" onclick="dismissAd()">✕</button>
         </div>
     </div>
 
@@ -687,9 +707,46 @@
         updateDisplay();
         updateHistoryDisplay();
 
-        // AdMob Integration with proper Capacitor syntax
+        // Ad state management
+        let adDismissed = false;
+        let appStartTime = Date.now();
+
+        function dismissAd() {
+            adDismissed = true;
+            document.getElementById('adBanner').classList.remove('visible');
+            console.log('Ad dismissed by user');
+        }
+
+        function showAdBanner() {
+            if (!adDismissed) {
+                document.getElementById('adBanner').classList.add('visible');
+            }
+        }
+
+        function updateAdContent(text) {
+            document.getElementById('adContent').textContent = text;
+        }
+
+        // AdMob Integration with user-friendly timing
         async function initializeAds() {
             console.log('initializeAds called');
+            
+            // Wait 1 minute before showing ads
+            const timeUsed = Date.now() - appStartTime;
+            const oneMinute = 60 * 1000;
+            
+            if (timeUsed < oneMinute) {
+                console.log('Waiting before showing ads...');
+                setTimeout(initializeAds, oneMinute - timeUsed);
+                return;
+            }
+
+            // Don't show if user already dismissed
+            if (adDismissed) {
+                console.log('Ads dismissed by user');
+                return;
+            }
+
             try {
                 const { AdMob } = window.Capacitor.Plugins;
                 console.log('AdMob plugin:', AdMob);
@@ -702,11 +759,13 @@
                     await loadBannerAd();
                 } else {
                     console.log('AdMob plugin not found');
-                    document.getElementById('adBanner').textContent = 'AdMob plugin not found';
+                    updateAdContent('AdMob plugin not found');
+                    showAdBanner();
                 }
             } catch (error) {
                 console.log('AdMob error:', error);
-                document.getElementById('adBanner').textContent = 'Ad error: ' + error.message;
+                updateAdContent('Ad error: ' + error.message);
+                showAdBanner();
             }
         }
 
@@ -718,16 +777,18 @@
                     position: 'BOTTOM_CENTER',
                     size: 'BANNER'
                 });
-                document.getElementById('adBanner').textContent = 'Ad loaded';
+                updateAdContent('Ad loaded');
+                showAdBanner();
             } catch (error) {
                 console.log('Banner ad error:', error);
-                document.getElementById('adBanner').textContent = 'Banner ad failed';
+                updateAdContent('Banner ad failed');
+                showAdBanner();
             }
         }
 
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(initializeAds, 1000);
+            setTimeout(initializeAds, 2000); // Small delay for app to fully load
         });
 
     </script>
