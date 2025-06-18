@@ -10,14 +10,12 @@ window.CommanderConfigs.jinnie = {
         { text: 'CREATE DOG TOKEN', action: 'createDogToken', class: 'success-btn' }
     ],
     abilities: [
-        { cost: 0, name: "REPLACE", description: "PASSIVE\nREPLACE TOKENS" },
-        { cost: 0, name: "CAT/DOG", description: "CHOICE\nCAT OR DOG" },
-        { cost: 0, name: "HASTE", description: "DOGS GET\nHASTE" }
+        // Jinnie has no activated abilities - just static replacement effect
     ],
     
     // Jinnie Fay specific functions
     createCatToken: function() {
-        // Create 2/2 Cat token with haste
+        // Create 2/2 Cat token
         const baseTokens = 1;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
@@ -32,59 +30,37 @@ window.CommanderConfigs.jinnie = {
     },
     
     createDogToken: function() {
-        // Create 3/1 Dog token with haste  
+        // Create 3/1 Dog token
         const baseTokens = 1;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
         gameState.tokenCounts.dog.untapped += finalTokens;
         
         if (finalTokens !== baseTokens) {
-            addToHistory(`+${baseTokens} Dog → +${finalTokens} 3/1 Dogs with haste (modified)`);
+            addToHistory(`+${baseTokens} Dog → +${finalTokens} 3/1 Dogs (modified)`);
         } else {
-            addToHistory(`+${finalTokens} 3/1 Dog token with haste`);
+            addToHistory(`+${finalTokens} 3/1 Dog token`);
         }
         updateDisplay();
     },
     
-    // Jinnie's replacement effect for non-creature tokens
-    replaceTokens: function(tokenType, amount, choiceType = 'cat') {
-        // Instead of creating the original token, create cats or dogs
-        if (tokenType !== 'cat' && tokenType !== 'dog') {
-            if (choiceType === 'cat') {
-                gameState.tokenCounts.cat.untapped += amount;
-                addToHistory(`Replaced ${amount} ${tokenType} tokens with ${amount} 2/2 Cat tokens`);
-            } else {
-                gameState.tokenCounts.dog.untapped += amount;
-                addToHistory(`Replaced ${amount} ${tokenType} tokens with ${amount} 3/1 Dog tokens with haste`);
-            }
-            updateDisplay();
-            return true;
-        }
-        return false;
-    },
-    
-    // Create treasure but replace with cats/dogs
-    createTreasureAsCats: function() {
-        const baseTokens = 1;
-        const finalTokens = applyTokenMultipliers(baseTokens);
-        
-        // Instead of treasures, create cats
+    // Create multiple cats at once (for when replacing larger token creation)
+    createMultipleCats: function(amount) {
+        const finalTokens = applyTokenMultipliers(amount);
         gameState.tokenCounts.cat.untapped += finalTokens;
-        addToHistory(`Treasure → ${finalTokens} 2/2 Cat tokens (Jinnie replacement)`);
+        addToHistory(`+${finalTokens} 2/2 Cat tokens (Jinnie replacement)`);
         updateDisplay();
     },
     
-    createTreasureAsDogs: function() {
-        const baseTokens = 1;
-        const finalTokens = applyTokenMultipliers(baseTokens);
-        
-        // Instead of treasures, create dogs
+    // Create multiple dogs at once (for when replacing larger token creation)
+    createMultipleDogs: function(amount) {
+        const finalTokens = applyTokenMultipliers(amount);
         gameState.tokenCounts.dog.untapped += finalTokens;
-        addToHistory(`Treasure → ${finalTokens} 3/1 Dog tokens with haste (Jinnie replacement)`);
+        addToHistory(`+${finalTokens} 3/1 Dog tokens (Jinnie replacement)`);
         updateDisplay();
     },
     
-    // Calculate combat damage
+    // Calculate total combat damage potential
     calculateCombatDamage: function() {
         const catCount = gameState.tokenCounts.cat.untapped + gameState.tokenCounts.cat.tapped;
         const dogCount = gameState.tokenCounts.dog.untapped + gameState.tokenCounts.dog.tapped;
@@ -95,15 +71,8 @@ window.CommanderConfigs.jinnie = {
         const dogDamage = dogCount * 3;
         const totalDamage = catDamage + dogDamage + jinniePower;
         
-        addToHistory(`Combat: ${catCount} Cats (${catDamage} dmg) + ${dogCount} Dogs (${dogDamage} dmg) + Jinnie (${jinniePower} dmg) = ${totalDamage} total`);
+        addToHistory(`Combat: ${catCount} Cats (${catDamage}) + ${dogCount} Dogs (${dogDamage}) + Jinnie (${jinniePower}) = ${totalDamage} damage`);
         return totalDamage;
-    },
-    
-    // Token choice interface (simplified)
-    showTokenChoice: function(amount, sourceType) {
-        // In a real implementation, this would show a modal
-        // For now, default to cats
-        this.replaceTokens(sourceType, amount, 'cat');
     },
     
     // Status display customization

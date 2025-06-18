@@ -4,100 +4,72 @@ window.CommanderConfigs.adrix = {
     name: "Adrix and Nev, Twincasters",
     baseStats: "2/2", 
     primaryTokens: ['generic'],
-    trackingLabels: ['TOKENS', 'DOUBLED', 'UNTAPPED', 'TAPPED'],
+    showCounters: false, // Don't show +1/+1 counters and trample for this commander
+    trackingLabels: ['TOKENS', 'TOTAL', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE TOKEN', action: 'createGenericToken', class: 'primary-btn' },
-        { text: 'TRIGGER DOUBLING', action: 'triggerDoubling', class: 'success-btn' }
+        { text: 'IN COMMAND ZONE', action: 'toggleCommandZone', class: 'warning-btn' }
     ],
     abilities: [
-        { cost: 0, name: "WARD 2", description: "PASSIVE\nWARD 2" },
-        { cost: 0, name: "DOUBLING", description: "FIRST TIME\nDOUBLE TOKENS" },
-        { cost: 0, name: "PROTECTION", description: "COUNTERS\nCOST +2" }
+        // Adrix and Nev have no activated abilities - just Ward 2 and doubling trigger
     ],
     
-    // Track if we've used the doubling this turn
-    doublingUsedThisTurn: false,
+    // Track if Adrix and Nev are on the battlefield
+    onBattlefield: true,
     
     // Adrix and Nev specific functions
     createGenericToken: function() {
         const baseTokens = 1;
         let finalTokens = applyTokenMultipliers(baseTokens);
         
-        // Adrix and Nev's ability: first time each turn, double token creation
-        if (!this.doublingUsedThisTurn) {
+        // Adrix and Nev's ability: double token creation (only if on battlefield)
+        if (this.onBattlefield) {
             finalTokens *= 2;
-            this.doublingUsedThisTurn = true;
-        }
-        
-        gameState.tokenCounts.generic.untapped += finalTokens;
-        
-        if (finalTokens !== baseTokens) {
-            const doubleText = this.doublingUsedThisTurn ? " (Twincasters doubling)" : "";
-            addToHistory(`+${baseTokens} Token → +${finalTokens}${doubleText}`);
+            addToHistory(`+${baseTokens} Token → +${finalTokens} (Twincasters doubled)`);
         } else {
             addToHistory(`+${finalTokens} Token`);
         }
+        
+        gameState.tokenCounts.generic.untapped += finalTokens;
         updateDisplay();
     },
     
-    triggerDoubling: function() {
-        // Force trigger the doubling ability with existing tokens
-        const currentTokens = getTotalTokens();
-        if (currentTokens > 0 && !this.doublingUsedThisTurn) {
-            // Double all existing tokens (simplified version)
-            Object.keys(gameState.tokenCounts).forEach(tokenType => {
-                const existing = gameState.tokenCounts[tokenType].untapped + gameState.tokenCounts[tokenType].tapped;
-                if (existing > 0) {
-                    gameState.tokenCounts[tokenType].untapped += existing;
-                }
-            });
-            
-            this.doublingUsedThisTurn = true;
-            addToHistory(`Twincasters: Doubled ${currentTokens} tokens`);
-            updateDisplay();
-        } else if (this.doublingUsedThisTurn) {
-            addToHistory(`Twincasters doubling already used this turn`);
+    // Toggle between command zone and battlefield
+    toggleCommandZone: function() {
+        this.onBattlefield = !this.onBattlefield;
+        
+        // Update the button text and class in mainActions
+        this.mainActions[1].text = this.onBattlefield ? 'ON BATTLEFIELD' : 'IN COMMAND ZONE';
+        this.mainActions[1].class = this.onBattlefield ? 'success-btn' : 'warning-btn';
+        
+        addToHistory(this.onBattlefield ? `Adrix and Nev: On battlefield` : `Adrix and Nev: In command zone`);
+        
+        // Update the main actions to reflect the new state
+        updateMainActionButtons();
+        updateDisplay();
+    },
+    
+    // Create multiple tokens at once (useful for replacing other token effects)
+    createMultipleTokens: function(amount) {
+        let finalTokens = applyTokenMultipliers(amount);
+        
+        // Apply Adrix doubling if on battlefield
+        if (this.onBattlefield) {
+            finalTokens *= 2;
+            addToHistory(`+${amount} Tokens → +${finalTokens} (Twincasters doubled)`);
         } else {
-            addToHistory(`No tokens to double`);
-        }
-    },
-    
-    // Reset doubling at start of turn (would need turn tracking)
-    newTurn: function() {
-        this.doublingUsedThisTurn = false;
-        addToHistory(`New turn: Twincasters doubling ready`);
-    },
-    
-    // Ward 2 ability helper
-    wardProtection: function() {
-        addToHistory(`Ward 2: Spells/abilities targeting Adrix cost 2 more`);
-    },
-    
-    // Token creation with Adrix doubling
-    onTokenCreate: function(tokenType, baseAmount) {
-        let finalAmount = baseAmount;
-        
-        // Apply Adrix doubling if available
-        if (!this.doublingUsedThisTurn) {
-            finalAmount *= 2;
-            this.doublingUsedThisTurn = true;
-            return {
-                amount: finalAmount,
-                message: `Twincasters: ${baseAmount} → ${finalAmount} (doubled)`
-            };
+            addToHistory(`+${finalTokens} Tokens`);
         }
         
-        return {
-            amount: finalAmount,
-            message: null
-        };
+        gameState.tokenCounts.generic.untapped += finalTokens;
+        updateDisplay();
     },
     
     // Status display customization
     getStatusValue: function(index) {
         switch(index) {
             case 0: return getTotalTokens(); // TOKENS
-            case 1: return this.doublingUsedThisTurn ? 1 : 0; // DOUBLED (1 if used, 0 if available)
+            case 1: return calculateTotalCombatDamage(); // VALUE (combat damage potential)
             case 2: return getTotalUntapped(); // UNTAPPED
             case 3: return getTotalTapped(); // TAPPED
             default: return 0;

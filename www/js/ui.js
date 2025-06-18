@@ -5,6 +5,7 @@ function updateDisplay() {
     updateMainDisplay();
     updateModifierToggles();
     updateAbilityButtons();
+    updateCommanderArt();
 }
 
 function updateMainDisplay() {
@@ -73,7 +74,9 @@ function updateMainActionButtons() {
         button.textContent = action.text;
         button.className = `btn ${action.class}`;
         button.onclick = () => {
-            if (typeof window[action.action] === 'function') {
+            if (typeof config[action.action] === 'function') {
+                config[action.action]();
+            } else if (typeof window[action.action] === 'function') {
                 window[action.action]();
             } else {
                 console.warn(`Action function ${action.action} not found`);
@@ -154,15 +157,37 @@ function updateCommanderInfo() {
     if (!config) return;
     
     const commanderInfo = document.getElementById('commanderInfo');
-    const baseStats = config.baseStats;
-    const counters = gameState.commanderCounters;
-    const trample = gameState.commanderHasTrample ? 'Yes' : 'No';
     
-    commanderInfo.innerHTML = `
-        <span>${config.name.split(',')[0]}: ${baseStats}</span>
-        <span>+${counters}/+${counters}</span>
-        <span>Trample: ${trample}</span>
-    `;
+    // Check if commander has custom display info function
+    if (typeof config.getCommanderDisplayInfo === 'function') {
+        // Use commander-specific display info
+        const displayInfo = config.getCommanderDisplayInfo();
+        commanderInfo.innerHTML = displayInfo;
+    } else {
+        // Fallback to basic display (name and stats only)
+        commanderInfo.innerHTML = `
+            <span>${config.name}: ${config.baseStats}</span>
+        `;
+    }
+}
+
+function updateCommanderArt() {
+    const config = gameState.currentCommanderConfig;
+    const artImg = document.getElementById('commanderArt');
+    
+    if (!artImg) return; // Art element doesn't exist yet
+    
+    if (config && config.artPath) {
+        artImg.src = config.artPath;
+        artImg.style.display = 'block';
+        artImg.onerror = function() {
+            // Hide image if it fails to load
+            this.style.display = 'none';
+            console.log(`Commander art not found: ${config.artPath}`);
+        };
+    } else {
+        artImg.style.display = 'none';
+    }
 }
 
 function updateStatusLabels() {
