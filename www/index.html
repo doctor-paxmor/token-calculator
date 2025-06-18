@@ -4,290 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MTG Token Calculator</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: #000000;
-            color: #ffffff;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-            /* Add fixed padding for status bar */
-            padding-top: 25px;
-        }
-        
-        .calculator-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #000;
-        }
-        
-        /* Calculator Display - Fixed Height */
-        .calculator-display {
-            background: #000;
-            height: 100px;
-            padding: 16px;
-            border-bottom: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        
-        .history-corner {
-            position: absolute;
-            top: 4px;
-            left: 8px;
-            width: 140px;
-            height: 70px;
-            overflow-y: auto;
-            font-size: 11px;
-            color: #555;
-            line-height: 1.2;
-            font-family: monospace;
-        }
-        
-        .history-corner::-webkit-scrollbar { width: 1px; }
-        .history-corner::-webkit-scrollbar-thumb { background: #333; }
-        
-        .main-number {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            font-size: 32px;
-            font-weight: 300;
-            font-family: monospace;
-            padding-right: 16px;
-        }
-        
-        .sub-line {
-            font-size: 12px;
-            color: #888;
-            text-align: right;
-            padding-right: 110px;
-            font-family: monospace;
-            margin-bottom: 4px;
-        }
-        
-        /* Status Bar */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1px;
-            background: #222;
-            padding: 0;
-        }
-        
-        .status-cell {
-            background: #1a1a1a;
-            padding: 8px 4px;
-            text-align: center;
-        }
-        
-        .status-label {
-            font-size: 9px;
-            color: #888;
-            margin-bottom: 2px;
-            font-weight: 500;
-        }
-        
-        .status-number {
-            font-size: 14px;
-            font-weight: 600;
-            font-family: monospace;
-        }
-        
-        .hares-color { color: #FF9800; }
-        .total-color { color: #2196F3; }
-        .ready-color { color: #4CAF50; }
-        .used-color { color: #f44336; }
-        
-        /* Button Grid */
-        .button-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 12px;
-            background: #111;
-        }
-        
-        .button-group {
-            background: rgba(255,255,255,0.05);
-            border-radius: 8px;
-            padding: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .button-row {
-            display: grid;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-        
-        .button-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .row-2 { grid-template-columns: 1fr 1fr; }
-        .row-3 { grid-template-columns: 1fr 1fr 1fr; }
-        .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-        
-        .btn {
-            background: #2d2d2d;
-            border: 1px solid #404040;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            padding: 12px 8px;
-            text-align: center;
-            line-height: 1.2;
-            font-family: inherit;
-        }
-        
-        .btn:active {
-            transform: scale(0.95);
-            background: #404040;
-        }
-        
-        .btn:disabled {
-            background: #1a1a1a;
-            color: #666;
-            cursor: not-allowed;
-            border-color: #333;
-        }
-        
-        .btn:disabled:active {
-            transform: none;
-        }
-        
-        /* Button Variants */
-        .toggle-btn {
-            background: #1a1a1a;
-            border-color: #333;
-        }
-        
-        .toggle-btn.active {
-            background: #4CAF50;
-            border-color: #4CAF50;
-            color: #000;
-            font-weight: 600;
-        }
-        
-        .primary-btn {
-            background: #0078d4;
-            border-color: #0078d4;
-        }
-        
-        .primary-btn:active {
-            background: #106ebe;
-        }
-        
-        .danger-btn {
-            background: #d83b01;
-            border-color: #d83b01;
-        }
-        
-        .danger-btn:active {
-            background: #a80000;
-        }
-        
-        .success-btn {
-            background: #107c10;
-            border-color: #107c10;
-        }
-        
-        .success-btn:active {
-            background: #0e6b0e;
-        }
-        
-        .warning-btn {
-            background: #ff8c00;
-            border-color: #ff8c00;
-        }
-        
-        .warning-btn:active {
-            background: #e67e00;
-        }
-        
-        .purple-btn {
-            background: #8764b8;
-            border-color: #8764b8;
-        }
-        
-        .purple-btn:active {
-            background: #744da9;
-        }
-        
-        .baylen-info {
-            background: #1a1a1a;
-            border-radius: 6px;
-            padding: 8px;
-            text-align: center;
-            font-size: 11px;
-            color: #ccc;
-            border: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        /* Ad banner space */
-        .ad-banner {
-            height: 30px;
-            background: transparent;
-            position: fixed;
-            bottom: 65px;
-            right: 8px;
-            display: none;
-            z-index: 999999;
-            align-items: flex-end;
-        }
-        
-        .ad-banner.visible {
-            display: flex;
-        }
-        
-        .dismiss-btn {
-            background: rgba(0,0,0,0.7);
-            border: 1px solid #666;
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .dismiss-btn:active {
-            background: rgba(0,0,0,0.9);
-        }
-        
-        @media (max-height: 700px) {
-            .calculator-display { height: 85px; padding: 12px; }
-            .main-number { font-size: 28px; }
-            .btn { padding: 10px 6px; font-size: 11px; }
-        }
-        
-        @media (max-height: 600px) {
-            .calculator-display { height: 70px; padding: 8px; }
-            .main-number { font-size: 24px; }
-            .btn { padding: 8px 4px; font-size: 10px; }
-            .button-area { gap: 6px; padding: 8px; }
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="calculator-container">
@@ -300,20 +17,20 @@
         <!-- Status Bar -->
         <div class="status-grid">
             <div class="status-cell">
-                <div class="status-label">HARES</div>
-                <div class="status-number hares-color" id="hareCount">0</div>
+                <div class="status-label">TOKENS</div>
+                <div class="status-number total-color" id="status0">0</div>
             </div>
             <div class="status-cell">
-                <div class="status-label">TOKENS</div>
-                <div class="status-number total-color" id="totalTokens">0</div>
+                <div class="status-label">VALUE</div>
+                <div class="status-number ready-color" id="status1">0</div>
             </div>
             <div class="status-cell">
                 <div class="status-label">UNTAPPED</div>
-                <div class="status-number ready-color" id="untappedTokens">0</div>
+                <div class="status-number ready-color" id="status2">0</div>
             </div>
             <div class="status-cell">
                 <div class="status-label">TAPPED</div>
-                <div class="status-number used-color" id="tappedTokens">0</div>
+                <div class="status-number used-color" id="status3">0</div>
             </div>
         </div>
         
@@ -349,15 +66,10 @@
                 </div>
             </div>
             
-            <!-- Main Actions -->
+            <!-- Main Actions (Dynamic) -->
             <div class="button-group">
-                <div class="button-row row-2">
-                    <button onclick="playHareApparent()" class="btn primary-btn">
-                        PLAY HARE APPARENT
-                    </button>
-                    <button onclick="removeHare()" class="btn danger-btn">
-                        REMOVE HARE APPARENT
-                    </button>
+                <div class="button-row row-2" id="mainActionRow">
+                    <button class="btn primary-btn">Loading...</button>
                 </div>
             </div>
             
@@ -383,33 +95,30 @@
                 </div>
             </div>
             
-            <!-- Abilities -->
+            <!-- Abilities (Dynamic) -->
             <div class="button-group">
-                <div class="button-row row-3">
-                    <button id="manaBtn" class="btn purple-btn" onclick="useManaAbility()">
-                        TAP 2<br>+1 MANA
-                    </button>
-                    <button id="drawBtn" class="btn purple-btn" onclick="useDrawAbility()">
-                        TAP 3<br>DRAW
-                    </button>
-                    <button id="pumpBtn" class="btn purple-btn" onclick="usePumpAbility()">
-                        TAP 4<br>+3/+3
-                    </button>
+                <div class="button-row row-3" id="abilityRow">
+                    <button class="btn purple-btn">Loading...</button>
                 </div>
                 
-                <div class="baylen-info">
-                    <span>Baylen: 4/3</span>
-                    <span>+<span id="counters">0</span>/+<span id="counters2">0</span></span>
-                    <span>Trample: <span id="trample">No</span></span>
+                <div class="commander-info" id="commanderInfo">
+                    <span>Loading Commander...</span>
                 </div>
             </div>
             
-            <!-- Reset -->
+            <!-- Reset & Commander Selection -->
             <div class="button-group">
                 <div class="button-row row-1" style="grid-template-columns: 1fr;">
                     <button onclick="resetBattlefield()" class="btn danger-btn">
                         RESET ALL
                     </button>
+                </div>
+                
+                <div style="margin-top: 8px;">
+                    <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">SELECT COMMANDER</div>
+                    <select id="commanderSelect" onchange="changeCommander()" class="commander-select">
+                        <option value="">Loading commanders...</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -429,370 +138,16 @@
     <input type="checkbox" id="adrixNev" style="display: none;">
     <input type="checkbox" id="ojerTaq" style="display: none;">
 
+    <!-- Load Scripts -->
+    <script src="js/core.js"></script>
+    <script src="js/tokenLogic.js"></script>
+    <script src="js/ui.js"></script>
     <script>
-        let gameState = {
-            hareCount: 0,
-            untappedTokens: 0,
-            tappedTokens: 0,
-            availableMana: 0,
-            cardsDrawn: 0,
-            baylenCounters: 0,
-            baylenHasTrample: false,
-            history: []
-        };
-
-        function addToHistory(action) {
-            gameState.history.push(action);
-            if (gameState.history.length > 15) {
-                gameState.history.shift();
-            }
-            updateHistoryDisplay();
-        }
-
-        function updateHistoryDisplay() {
-            const historyDiv = document.getElementById('historyLog');
-            if (gameState.history.length === 0) {
-                historyDiv.innerHTML = '<div style="color: #333;">History</div>';
-            } else {
-                historyDiv.innerHTML = gameState.history
-                    .slice(-10)
-                    .map(entry => `<div style="margin-bottom: 1px;">${entry}</div>`)
-                    .join('');
-                historyDiv.scrollTop = historyDiv.scrollHeight;
-            }
-        }
-
-        function updateMainDisplay() {
-            const totalTokens = gameState.untappedTokens + gameState.tappedTokens;
-            document.getElementById('mainNumber').textContent = totalTokens;
-        }
-
-        function toggleModifier(id) {
-            const checkbox = document.getElementById(id);
-            checkbox.checked = !checkbox.checked;
-            
-            // Update display to show new modifier status
-            updateDisplay();
-            
-            // Add to history which modifier was toggled
-            const modifierNames = {
-                'doublingSeasons': 'Doubling Season',
-                'parallelLives': 'Parallel Lives', 
-                'mondrak': 'Mondrak',
-                'anointedProcession': 'Anointed Procession',
-                'primalVigor': 'Primal Vigor',
-                'adrixNev': 'Adrix & Nev',
-                'ojerTaq': 'Ojer Taq'
-            };
-            
-            const action = checkbox.checked ? 'ON' : 'OFF';
-            addToHistory(`${modifierNames[id]} ${action}`);
-        }
-
-        function updateDisplay() {
-            document.getElementById('hareCount').textContent = gameState.hareCount;
-            document.getElementById('untappedTokens').textContent = gameState.untappedTokens;
-            document.getElementById('tappedTokens').textContent = gameState.tappedTokens;
-            document.getElementById('totalTokens').textContent = gameState.untappedTokens + gameState.tappedTokens;
-            document.getElementById('counters').textContent = gameState.baylenCounters;
-            document.getElementById('counters2').textContent = gameState.baylenCounters;
-            document.getElementById('trample').textContent = gameState.baylenHasTrample ? 'Yes' : 'No';
-            
-            // Update ability buttons
-            document.getElementById('manaBtn').disabled = gameState.untappedTokens < 2;
-            document.getElementById('drawBtn').disabled = gameState.untappedTokens < 3;
-            document.getElementById('pumpBtn').disabled = gameState.untappedTokens < 4;
-            
-            // Update all modifier button states to match checkboxes
-            document.getElementById('doublingToggle').classList.toggle('active', document.getElementById('doublingSeasons').checked);
-            document.getElementById('parallelToggle').classList.toggle('active', document.getElementById('parallelLives').checked);
-            document.getElementById('mondrakToggle').classList.toggle('active', document.getElementById('mondrak').checked);
-            document.getElementById('anointedToggle').classList.toggle('active', document.getElementById('anointedProcession').checked);
-            document.getElementById('primalToggle').classList.toggle('active', document.getElementById('primalVigor').checked);
-            document.getElementById('adrixToggle').classList.toggle('active', document.getElementById('adrixNev').checked);
-            document.getElementById('ojerToggle').classList.toggle('active', document.getElementById('ojerTaq').checked);
-            
-            updateMainDisplay();
-        }
-
-        function playHareApparent() {
-            const baseTokens = gameState.hareCount; // Number of other Hares already in play
-            const finalTokens = applyTokenMultipliers(baseTokens);
-            
-            gameState.untappedTokens += finalTokens;
-            gameState.hareCount += 1;
-            
-            if (baseTokens === 0) {
-                addToHistory(`Hare #${gameState.hareCount} → no tokens (first Hare)`);
-            } else if (finalTokens !== baseTokens) {
-                addToHistory(`Hare #${gameState.hareCount} → ${baseTokens} × modifiers = ${finalTokens}`);
-            } else {
-                addToHistory(`Hare #${gameState.hareCount} → +${finalTokens}`);
-            }
-            
-            updateDisplay();
-        }
-
-        function removeHare() {
-            if (gameState.hareCount > 0) {
-                gameState.hareCount -= 1;
-                addToHistory(`-1 Hare`);
-                updateDisplay();
-            }
-        }
-
-        function addTokensDirect(amount) {
-            const multipliedAmount = applyTokenMultipliers(amount);
-            gameState.untappedTokens += multipliedAmount;
-            if (multipliedAmount !== amount) {
-                addToHistory(`+${amount} → +${multipliedAmount} (modified)`);
-            } else {
-                addToHistory(`+${amount}`);
-            }
-            updateDisplay();
-        }
-
-        function applyTokenMultipliers(baseAmount) {
-            if (baseAmount === 0) return 0;
-            
-            let multiplier = 1;
-            
-            // Effects that double ALL tokens
-            if (document.getElementById('doublingSeasons').checked) multiplier *= 2;
-            if (document.getElementById('mondrak').checked) multiplier *= 2;
-            if (document.getElementById('primalVigor').checked) multiplier *= 2;
-            if (document.getElementById('adrixNev').checked) multiplier *= 2; // Simplified - first time per turn
-            
-            // Effects that double CREATURE tokens (rabbits count as creatures)
-            if (document.getElementById('parallelLives').checked) multiplier *= 2;
-            if (document.getElementById('anointedProcession').checked) multiplier *= 2;
-            
-            // Ojer Taq triples instead of doubles
-            if (document.getElementById('ojerTaq').checked) multiplier *= 3;
-            
-            return baseAmount * multiplier;
-        }
-
-        function removeTokens(amount) {
-            const toRemove = Math.min(amount, gameState.untappedTokens + gameState.tappedTokens);
-            if (gameState.untappedTokens >= toRemove) {
-                gameState.untappedTokens -= toRemove;
-            } else {
-                const fromUntapped = gameState.untappedTokens;
-                const fromTapped = toRemove - fromUntapped;
-                gameState.untappedTokens = 0;
-                gameState.tappedTokens -= fromTapped;
-            }
-            if (toRemove > 0) {
-                addToHistory(`-${toRemove}`);
-            }
-            updateDisplay();
-        }
-
-        function tapTokens(amount) {
-            const toTap = Math.min(amount, gameState.untappedTokens);
-            if (toTap > 0) {
-                gameState.untappedTokens -= toTap;
-                gameState.tappedTokens += toTap;
-                addToHistory(`Tap ${toTap}`);
-                updateDisplay();
-            }
-        }
-
-        function untapTokens(amount) {
-            const toUntap = Math.min(amount, gameState.tappedTokens);
-            if (toUntap > 0) {
-                gameState.tappedTokens -= toUntap;
-                gameState.untappedTokens += toUntap;
-                addToHistory(`Untap ${toUntap}`);
-                updateDisplay();
-            }
-        }
-
-        function tapAll() {
-            const toTap = gameState.untappedTokens;
-            gameState.tappedTokens += gameState.untappedTokens;
-            gameState.untappedTokens = 0;
-            if (toTap > 0) {
-                addToHistory(`Tap ${toTap}`);
-            }
-            updateDisplay();
-        }
-
-        function untapAll() {
-            const toUntap = gameState.tappedTokens;
-            gameState.untappedTokens += gameState.tappedTokens;
-            gameState.tappedTokens = 0;
-            if (toUntap > 0) {
-                addToHistory(`Untap ${toUntap}`);
-            }
-            updateDisplay();
-        }
-
-        function useManaAbility() {
-            if (gameState.untappedTokens >= 2) {
-                gameState.untappedTokens -= 2;
-                gameState.tappedTokens += 2;
-                gameState.availableMana += 1;
-                addToHistory(`+1 mana (${gameState.availableMana})`);
-                updateDisplay();
-            }
-        }
-
-        function useDrawAbility() {
-            if (gameState.untappedTokens >= 3) {
-                gameState.untappedTokens -= 3;
-                gameState.tappedTokens += 3;
-                gameState.cardsDrawn += 1;
-                addToHistory(`Draw (${gameState.cardsDrawn})`);
-                updateDisplay();
-            }
-        }
-
-        function usePumpAbility() {
-            if (gameState.untappedTokens >= 4) {
-                gameState.untappedTokens -= 4;
-                gameState.tappedTokens += 4;
-                
-                let countersToAdd = 3;
-                // Effects that double counters placed on permanents
-                if (document.getElementById('doublingSeasons').checked) {
-                    countersToAdd *= 2;
-                }
-                if (document.getElementById('primalVigor').checked) {
-                    countersToAdd *= 2;
-                }
-                
-                gameState.baylenCounters += countersToAdd;
-                gameState.baylenHasTrample = true;
-                
-                if (countersToAdd === 3) {
-                    addToHistory(`+3/+3 trample`);
-                } else {
-                    const modifiers = [];
-                    if (document.getElementById('doublingSeasons').checked) modifiers.push('DS');
-                    if (document.getElementById('primalVigor').checked) modifiers.push('PV');
-                    addToHistory(`+3/+3 → +${countersToAdd}/+${countersToAdd} trample (${modifiers.join('+')})`);
-                }
-                updateDisplay();
-            }
-        }
-
-        function resetBattlefield() {
-            gameState = {
-                hareCount: 0,
-                untappedTokens: 0,
-                tappedTokens: 0,
-                availableMana: 0,
-                cardsDrawn: 0,
-                baylenCounters: 0,
-                baylenHasTrample: false,
-                history: []
-            };
-            
-            // Reset all modifier toggles
-            const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
-            const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'adrixToggle', 'ojerToggle'];
-            
-            modifierIds.forEach(id => document.getElementById(id).checked = false);
-            toggleIds.forEach(id => document.getElementById(id).classList.remove('active'));
-            
-            updateDisplay();
-            addToHistory("Reset");
-        }
-
-        // Ad state management
-        let adDismissed = false;
-        let appStartTime = Date.now();
-
-        function dismissAd() {
-            adDismissed = true;
-            // Hide both custom banner and AdMob banner
-            document.getElementById('adBanner').classList.remove('visible');
-            
-            // Hide the AdMob banner
-            try {
-                const { AdMob } = window.Capacitor.Plugins;
-                if (AdMob) {
-                    AdMob.hideBanner();
-                }
-            } catch (error) {
-                console.log('Error hiding AdMob banner:', error);
-            }
-            
-            console.log('Ad dismissed by user');
-        }
-
-        function showAdBanner() {
-            if (!adDismissed) {
-                document.getElementById('adBanner').classList.add('visible');
-            }
-        }
-
-        function updateAdContent(text) {
-            // No longer needed - we just show dismiss button
-        }
-
-        // AdMob Integration with user-friendly timing
-        async function initializeAds() {
-            console.log('initializeAds called');
-            
-            // Wait 1 minute before showing ads
-            const timeUsed = Date.now() - appStartTime;
-            const oneMinute = 60 * 1000;
-            
-            if (timeUsed < oneMinute) {
-                console.log('Waiting before showing ads...');
-                setTimeout(initializeAds, oneMinute - timeUsed);
-                return;
-            }
-
-            // Don't show if user already dismissed
-            if (adDismissed) {
-                console.log('Ads dismissed by user');
-                return;
-            }
-
-            try {
-                const { AdMob } = window.Capacitor.Plugins;
-                console.log('AdMob plugin:', AdMob);
-                
-                if (AdMob) {
-                    console.log('AdMob found, initializing...');
-                    await AdMob.initialize({
-                        initializeForTesting: true
-                    });
-                    await loadBannerAd();
-                } else {
-                    console.log('AdMob plugin not found');
-                }
-            } catch (error) {
-                console.log('AdMob error:', error);
-            }
-        }
-
-        async function loadBannerAd() {
-            try {
-                const { AdMob } = window.Capacitor.Plugins;
-                // Let AdMob plugin read bannerAdUnitId from capacitor.config.json automatically
-                await AdMob.showBanner({
-                    position: 'BOTTOM_CENTER',
-                    size: 'BANNER'
-                });
-                console.log('Banner ad loaded');
-                showAdBanner(); // Show our dismiss button overlay
-            } catch (error) {
-                console.log('Banner ad error:', error);
-            }
-        }
-
-        // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDisplay();
-            updateHistoryDisplay();
-            setTimeout(initializeAds, 2000); // Small delay for app to fully load
+        // Initialize app when everything loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadAvailableCommanders();
+            initializeApp();
         });
-
     </script>
 </body>
 </html>
