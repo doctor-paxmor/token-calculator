@@ -246,16 +246,14 @@
         
         /* Ad banner space */
         .ad-banner {
-            height: 50px;
-            background: #1a1a1a;
-            border-top: 1px solid #333;
-            display: none; /* Hidden by default */
-            align-items: center;
-            justify-content: space-between;
-            color: #666;
-            font-size: 12px;
-            flex-shrink: 0;
-            padding: 0 12px;
+            height: 30px;
+            background: transparent;
+            position: fixed;
+            bottom: 65px;
+            right: 8px;
+            display: none;
+            z-index: 999999;
+            align-items: flex-end;
         }
         
         .ad-banner.visible {
@@ -263,17 +261,18 @@
         }
         
         .dismiss-btn {
-            background: #333;
-            border: none;
+            background: rgba(0,0,0,0.7);
+            border: 1px solid #666;
             color: #fff;
             padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
+            border-radius: 12px;
+            font-size: 12px;
             cursor: pointer;
+            font-weight: bold;
         }
         
         .dismiss-btn:active {
-            background: #555;
+            background: rgba(0,0,0,0.9);
         }
         
         @media (max-height: 700px) {
@@ -415,10 +414,9 @@
             </div>
         </div>
         
-        <!-- Ad Banner -->
+        <!-- Ad Dismiss Button -->
         <div class="ad-banner" id="adBanner">
-            <span id="adContent">Loading ads...</span>
-            <button class="dismiss-btn" onclick="dismissAd()">✕</button>
+            <button class="dismiss-btn" onclick="dismissAd()">❎ Hide Ad</button>
         </div>
     </div>
 
@@ -703,17 +701,25 @@
             addToHistory("Reset");
         }
 
-        // Initialize
-        updateDisplay();
-        updateHistoryDisplay();
-
         // Ad state management
         let adDismissed = false;
         let appStartTime = Date.now();
 
         function dismissAd() {
             adDismissed = true;
+            // Hide both custom banner and AdMob banner
             document.getElementById('adBanner').classList.remove('visible');
+            
+            // Hide the AdMob banner
+            try {
+                const { AdMob } = window.Capacitor.Plugins;
+                if (AdMob) {
+                    AdMob.hideBanner();
+                }
+            } catch (error) {
+                console.log('Error hiding AdMob banner:', error);
+            }
+            
             console.log('Ad dismissed by user');
         }
 
@@ -724,7 +730,7 @@
         }
 
         function updateAdContent(text) {
-            document.getElementById('adContent').textContent = text;
+            // No longer needed - we just show dismiss button
         }
 
         // AdMob Integration with user-friendly timing
@@ -759,35 +765,31 @@
                     await loadBannerAd();
                 } else {
                     console.log('AdMob plugin not found');
-                    updateAdContent('AdMob plugin not found');
-                    showAdBanner();
                 }
             } catch (error) {
                 console.log('AdMob error:', error);
-                updateAdContent('Ad error: ' + error.message);
-                showAdBanner();
             }
         }
 
         async function loadBannerAd() {
             try {
                 const { AdMob } = window.Capacitor.Plugins;
+                // Let AdMob plugin read bannerAdUnitId from capacitor.config.json automatically
                 await AdMob.showBanner({
-                    adId: 'ca-app-pub-2559138273229237/6017755575', // Replace with your Ad Unit ID
                     position: 'BOTTOM_CENTER',
                     size: 'BANNER'
                 });
-                updateAdContent('Ad loaded');
-                showAdBanner();
+                console.log('Banner ad loaded');
+                showAdBanner(); // Show our dismiss button overlay
             } catch (error) {
                 console.log('Banner ad error:', error);
-                updateAdContent('Banner ad failed');
-                showAdBanner();
             }
         }
 
         // Initialize when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            updateHistoryDisplay();
             setTimeout(initializeAds, 2000); // Small delay for app to fully load
         });
 
