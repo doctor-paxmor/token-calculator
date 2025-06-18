@@ -687,33 +687,37 @@
         updateDisplay();
         updateHistoryDisplay();
 
-        // AdMob Integration
+        // AdMob Integration with proper Capacitor syntax
         async function initializeAds() {
+            console.log('initializeAds called');
             try {
-                if (window.AdMob) {
-                    await window.AdMob.initialize({
-                        initializeForTesting: true // Remove this line when publishing
+                const { AdMob } = window.Capacitor.Plugins;
+                console.log('AdMob plugin:', AdMob);
+                
+                if (AdMob) {
+                    console.log('AdMob found, initializing...');
+                    await AdMob.initialize({
+                        initializeForTesting: true
                     });
-                    
                     await loadBannerAd();
                 } else {
-                    console.log('AdMob not available');
-                    document.getElementById('adBanner').textContent = 'AdMob not available';
+                    console.log('AdMob plugin not found');
+                    document.getElementById('adBanner').textContent = 'AdMob plugin not found';
                 }
             } catch (error) {
                 console.log('AdMob error:', error);
-                document.getElementById('adBanner').textContent = 'Ad loading failed';
+                document.getElementById('adBanner').textContent = 'Ad error: ' + error.message;
             }
         }
 
         async function loadBannerAd() {
             try {
-                await window.AdMob.showBanner({
-                    adId: 'ca-app-pub-2559138273229237/6017755575', // Replace with your Ad Unit ID (the one with /)
+                const { AdMob } = window.Capacitor.Plugins;
+                await AdMob.showBanner({
+                    adId: 'ca-app-pub-2559138273229237/6017755575', // Replace with your Ad Unit ID
                     position: 'BOTTOM_CENTER',
                     size: 'BANNER'
                 });
-                
                 document.getElementById('adBanner').textContent = 'Ad loaded';
             } catch (error) {
                 console.log('Banner ad error:', error);
@@ -721,15 +725,10 @@
             }
         }
 
-        // Initialize ads when app starts
-        document.addEventListener('deviceready', initializeAds);
-        
-        // Fallback for web testing
-        setTimeout(() => {
-            if (!window.AdMob) {
-                document.getElementById('adBanner').textContent = 'Web preview - ads disabled';
-            }
-        }, 1000);
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initializeAds, 1000);
+        });
 
     </script>
 </body>
