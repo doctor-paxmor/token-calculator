@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hare & Baylen Calculator</title>
+    <title>MTG Token Calculator</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +11,7 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: #000000;
@@ -25,27 +24,14 @@
             /* Add fixed padding for status bar */
             padding-top: 25px;
         }
-
-        /* Ad banner space */
-        .ad-banner {
-            height: 50px;
-            background: #1a1a1a;
-            border-top: 1px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-size: 12px;
-            flex-shrink: 0;
-        }
-
+        
         .calculator-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             background: #000;
         }
-
+        
         /* Calculator Display - Fixed Height */
         .calculator-display {
             background: #000;
@@ -56,7 +42,7 @@
             flex-direction: column;
             position: relative;
         }
-
+        
         .history-corner {
             position: absolute;
             top: 4px;
@@ -69,15 +55,10 @@
             line-height: 1.2;
             font-family: monospace;
         }
-
-        .history-corner::-webkit-scrollbar {
-            width: 1px;
-        }
-
-        .history-corner::-webkit-scrollbar-thumb {
-            background: #333;
-        }
-
+        
+        .history-corner::-webkit-scrollbar { width: 1px; }
+        .history-corner::-webkit-scrollbar-thumb { background: #333; }
+        
         .main-number {
             flex: 1;
             display: flex;
@@ -88,7 +69,7 @@
             font-family: monospace;
             padding-right: 16px;
         }
-
+        
         .sub-line {
             font-size: 12px;
             color: #888;
@@ -97,7 +78,7 @@
             font-family: monospace;
             margin-bottom: 4px;
         }
-
+        
         /* Status Bar */
         .status-grid {
             display: grid;
@@ -106,42 +87,31 @@
             background: #222;
             padding: 0;
         }
-
+        
         .status-cell {
             background: #1a1a1a;
             padding: 8px 4px;
             text-align: center;
         }
-
+        
         .status-label {
             font-size: 9px;
             color: #888;
             margin-bottom: 2px;
             font-weight: 500;
         }
-
+        
         .status-number {
             font-size: 14px;
             font-weight: 600;
             font-family: monospace;
         }
-
-        .hares-color {
-            color: #FF9800;
-        }
-
-        .total-color {
-            color: #2196F3;
-        }
-
-        .ready-color {
-            color: #4CAF50;
-        }
-
-        .used-color {
-            color: #f44336;
-        }
-
+        
+        .hares-color { color: #FF9800; }
+        .total-color { color: #2196F3; }
+        .ready-color { color: #4CAF50; }
+        .used-color { color: #f44336; }
+        
         /* Button Grid */
         .button-area {
             flex: 1;
@@ -151,36 +121,28 @@
             padding: 12px;
             background: #111;
         }
-
+        
         .button-group {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255,255,255,0.05);
             border-radius: 8px;
             padding: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
+        
         .button-row {
             display: grid;
             gap: 6px;
             margin-bottom: 6px;
         }
-
+        
         .button-row:last-child {
             margin-bottom: 0;
         }
-
-        .row-2 {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .row-3 {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        .row-4 {
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-        }
-
+        
+        .row-2 { grid-template-columns: 1fr 1fr; }
+        .row-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        
         .btn {
             background: #2d2d2d;
             border: 1px solid #404040;
@@ -195,81 +157,81 @@
             line-height: 1.2;
             font-family: inherit;
         }
-
+        
         .btn:active {
             transform: scale(0.95);
             background: #404040;
         }
-
+        
         .btn:disabled {
             background: #1a1a1a;
             color: #666;
             cursor: not-allowed;
             border-color: #333;
         }
-
+        
         .btn:disabled:active {
             transform: none;
         }
-
+        
         /* Button Variants */
         .toggle-btn {
             background: #1a1a1a;
             border-color: #333;
         }
-
+        
         .toggle-btn.active {
             background: #4CAF50;
             border-color: #4CAF50;
             color: #000;
             font-weight: 600;
         }
-
+        
         .primary-btn {
             background: #0078d4;
             border-color: #0078d4;
         }
-
+        
         .primary-btn:active {
             background: #106ebe;
         }
-
+        
         .danger-btn {
             background: #d83b01;
             border-color: #d83b01;
         }
-
+        
         .danger-btn:active {
             background: #a80000;
         }
-
+        
         .success-btn {
             background: #107c10;
             border-color: #107c10;
         }
-
+        
         .success-btn:active {
             background: #0e6b0e;
         }
-
+        
         .warning-btn {
             background: #ff8c00;
             border-color: #ff8c00;
         }
-
+        
         .warning-btn:active {
             background: #e67e00;
         }
-
+        
         .purple-btn {
             background: #8764b8;
             border-color: #8764b8;
         }
-
+        
         .purple-btn:active {
             background: #744da9;
         }
-
+        
         .baylen-info {
             background: #1a1a1a;
             border-radius: 6px;
@@ -281,46 +243,34 @@
             display: flex;
             justify-content: space-between;
         }
-
-        @media (max-height: 700px) {
-            .calculator-display {
-                height: 85px;
-                padding: 12px;
-            }
-
-            .main-number {
-                font-size: 28px;
-            }
-
-            .btn {
-                padding: 10px 6px;
-                font-size: 11px;
-            }
+        
+        /* Ad banner space */
+        .ad-banner {
+            height: 50px;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+            flex-shrink: 0;
         }
-
+        
+        @media (max-height: 700px) {
+            .calculator-display { height: 85px; padding: 12px; }
+            .main-number { font-size: 28px; }
+            .btn { padding: 10px 6px; font-size: 11px; }
+        }
+        
         @media (max-height: 600px) {
-            .calculator-display {
-                height: 70px;
-                padding: 8px;
-            }
-
-            .main-number {
-                font-size: 24px;
-            }
-
-            .btn {
-                padding: 8px 4px;
-                font-size: 10px;
-            }
-
-            .button-area {
-                gap: 6px;
-                padding: 8px;
-            }
+            .calculator-display { height: 70px; padding: 8px; }
+            .main-number { font-size: 24px; }
+            .btn { padding: 8px 4px; font-size: 10px; }
+            .button-area { gap: 6px; padding: 8px; }
         }
     </style>
 </head>
-
 <body>
     <div class="calculator-container">
         <!-- Calculator Display -->
@@ -328,7 +278,7 @@
             <div class="history-corner" id="historyLog"></div>
             <div class="main-number" id="mainNumber">0</div>
         </div>
-
+        
         <!-- Status Bar -->
         <div class="status-grid">
             <div class="status-cell">
@@ -348,13 +298,12 @@
                 <div class="status-number used-color" id="tappedTokens">0</div>
             </div>
         </div>
-
+        
         <!-- Button Area -->
         <div class="button-area">
             <!-- Modifiers -->
             <div class="button-group">
-                <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">TOKEN MULTIPLIERS
-                </div>
+                <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">TOKEN MULTIPLIERS</div>
                 <div class="button-row row-4">
                     <button class="btn toggle-btn" id="doublingToggle" onclick="toggleModifier('doublingSeasons')">
                         Doubling<br>Season
@@ -381,23 +330,22 @@
                     </button>
                 </div>
             </div>
-
+            
             <!-- Main Actions -->
             <div class="button-group">
                 <div class="button-row row-2">
                     <button onclick="playHareApparent()" class="btn primary-btn">
-                        🐰 PLAY HARE
+                        PLAY HARE APPARENT
                     </button>
                     <button onclick="removeHare()" class="btn danger-btn">
-                        REMOVE HARE
+                        REMOVE HARE APPARENT
                     </button>
                 </div>
             </div>
-
+            
             <!-- Add/Remove Tokens -->
             <div class="button-group">
-                <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">ADD/REMOVE TOKENS
-                </div>
+                <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">ADD/REMOVE TOKENS</div>
                 <div class="button-row row-4">
                     <button class="btn success-btn" onclick="addTokensDirect(1)">+1</button>
                     <button class="btn success-btn" onclick="addTokensDirect(5)">+5</button>
@@ -405,11 +353,10 @@
                     <button class="btn danger-btn" onclick="removeTokens(5)">-5</button>
                 </div>
             </div>
-
+            
             <!-- Tap/Untap Controls -->
             <div class="button-group">
-                <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">TAP/UNTAP TOKENS
-                </div>
+                <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">TAP/UNTAP TOKENS</div>
                 <div class="button-row row-4">
                     <button class="btn warning-btn" onclick="tapTokens(1)">TAP 1</button>
                     <button class="btn warning-btn" onclick="tapAll()">TAP ALL</button>
@@ -417,7 +364,7 @@
                     <button class="btn success-btn" onclick="untapAll()">UNTAP ALL</button>
                 </div>
             </div>
-
+            
             <!-- Abilities -->
             <div class="button-group">
                 <div class="button-row row-3">
@@ -431,14 +378,14 @@
                         TAP 4<br>+3/+3
                     </button>
                 </div>
-
+                
                 <div class="baylen-info">
                     <span>Baylen: 4/3</span>
                     <span>+<span id="counters">0</span>/+<span id="counters2">0</span></span>
                     <span>Trample: <span id="trample">No</span></span>
                 </div>
             </div>
-
+            
             <!-- Reset -->
             <div class="button-group">
                 <div class="button-row row-1" style="grid-template-columns: 1fr;">
@@ -448,9 +395,10 @@
                 </div>
             </div>
         </div>
+        
         <!-- Ad Banner -->
-        <div class="ad-banner">
-            Ad space - 320x50
+        <div class="ad-banner" id="adBanner">
+            Loading ads...
         </div>
     </div>
 
@@ -504,21 +452,21 @@
         function toggleModifier(id) {
             const checkbox = document.getElementById(id);
             checkbox.checked = !checkbox.checked;
-
+            
             // Update display to show new modifier status
             updateDisplay();
-
+            
             // Add to history which modifier was toggled
             const modifierNames = {
                 'doublingSeasons': 'Doubling Season',
-                'parallelLives': 'Parallel Lives',
+                'parallelLives': 'Parallel Lives', 
                 'mondrak': 'Mondrak',
                 'anointedProcession': 'Anointed Procession',
                 'primalVigor': 'Primal Vigor',
                 'adrixNev': 'Adrix & Nev',
                 'ojerTaq': 'Ojer Taq'
             };
-
+            
             const action = checkbox.checked ? 'ON' : 'OFF';
             addToHistory(`${modifierNames[id]} ${action}`);
         }
@@ -531,12 +479,12 @@
             document.getElementById('counters').textContent = gameState.baylenCounters;
             document.getElementById('counters2').textContent = gameState.baylenCounters;
             document.getElementById('trample').textContent = gameState.baylenHasTrample ? 'Yes' : 'No';
-
+            
             // Update ability buttons
             document.getElementById('manaBtn').disabled = gameState.untappedTokens < 2;
             document.getElementById('drawBtn').disabled = gameState.untappedTokens < 3;
             document.getElementById('pumpBtn').disabled = gameState.untappedTokens < 4;
-
+            
             // Update all modifier button states to match checkboxes
             document.getElementById('doublingToggle').classList.toggle('active', document.getElementById('doublingSeasons').checked);
             document.getElementById('parallelToggle').classList.toggle('active', document.getElementById('parallelLives').checked);
@@ -545,17 +493,17 @@
             document.getElementById('primalToggle').classList.toggle('active', document.getElementById('primalVigor').checked);
             document.getElementById('adrixToggle').classList.toggle('active', document.getElementById('adrixNev').checked);
             document.getElementById('ojerToggle').classList.toggle('active', document.getElementById('ojerTaq').checked);
-
+            
             updateMainDisplay();
         }
 
         function playHareApparent() {
             const baseTokens = gameState.hareCount; // Number of other Hares already in play
             const finalTokens = applyTokenMultipliers(baseTokens);
-
+            
             gameState.untappedTokens += finalTokens;
             gameState.hareCount += 1;
-
+            
             if (baseTokens === 0) {
                 addToHistory(`Hare #${gameState.hareCount} → no tokens (first Hare)`);
             } else if (finalTokens !== baseTokens) {
@@ -563,7 +511,7 @@
             } else {
                 addToHistory(`Hare #${gameState.hareCount} → +${finalTokens}`);
             }
-
+            
             updateDisplay();
         }
 
@@ -588,22 +536,22 @@
 
         function applyTokenMultipliers(baseAmount) {
             if (baseAmount === 0) return 0;
-
+            
             let multiplier = 1;
-
+            
             // Effects that double ALL tokens
             if (document.getElementById('doublingSeasons').checked) multiplier *= 2;
             if (document.getElementById('mondrak').checked) multiplier *= 2;
             if (document.getElementById('primalVigor').checked) multiplier *= 2;
             if (document.getElementById('adrixNev').checked) multiplier *= 2; // Simplified - first time per turn
-
+            
             // Effects that double CREATURE tokens (rabbits count as creatures)
             if (document.getElementById('parallelLives').checked) multiplier *= 2;
             if (document.getElementById('anointedProcession').checked) multiplier *= 2;
-
+            
             // Ojer Taq triples instead of doubles
             if (document.getElementById('ojerTaq').checked) multiplier *= 3;
-
+            
             return baseAmount * multiplier;
         }
 
@@ -687,7 +635,7 @@
             if (gameState.untappedTokens >= 4) {
                 gameState.untappedTokens -= 4;
                 gameState.tappedTokens += 4;
-
+                
                 let countersToAdd = 3;
                 // Effects that double counters placed on permanents
                 if (document.getElementById('doublingSeasons').checked) {
@@ -696,10 +644,10 @@
                 if (document.getElementById('primalVigor').checked) {
                     countersToAdd *= 2;
                 }
-
+                
                 gameState.baylenCounters += countersToAdd;
                 gameState.baylenHasTrample = true;
-
+                
                 if (countersToAdd === 3) {
                     addToHistory(`+3/+3 trample`);
                 } else {
@@ -723,14 +671,14 @@
                 baylenHasTrample: false,
                 history: []
             };
-
+            
             // Reset all modifier toggles
             const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
             const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'adrixToggle', 'ojerToggle'];
-
+            
             modifierIds.forEach(id => document.getElementById(id).checked = false);
             toggleIds.forEach(id => document.getElementById(id).classList.remove('active'));
-
+            
             updateDisplay();
             addToHistory("Reset");
         }
@@ -738,7 +686,51 @@
         // Initialize
         updateDisplay();
         updateHistoryDisplay();
+
+        // AdMob Integration
+        async function initializeAds() {
+            try {
+                if (window.AdMob) {
+                    await window.AdMob.initialize({
+                        initializeForTesting: true // Remove this line when publishing
+                    });
+                    
+                    await loadBannerAd();
+                } else {
+                    console.log('AdMob not available');
+                    document.getElementById('adBanner').textContent = 'AdMob not available';
+                }
+            } catch (error) {
+                console.log('AdMob error:', error);
+                document.getElementById('adBanner').textContent = 'Ad loading failed';
+            }
+        }
+
+        async function loadBannerAd() {
+            try {
+                await window.AdMob.showBanner({
+                    adId: 'ca-app-pub-2559138273229237/6017755575', // Replace with your Ad Unit ID (the one with /)
+                    position: 'BOTTOM_CENTER',
+                    size: 'BANNER'
+                });
+                
+                document.getElementById('adBanner').textContent = 'Ad loaded';
+            } catch (error) {
+                console.log('Banner ad error:', error);
+                document.getElementById('adBanner').textContent = 'Banner ad failed';
+            }
+        }
+
+        // Initialize ads when app starts
+        document.addEventListener('deviceready', initializeAds);
+        
+        // Fallback for web testing
+        setTimeout(() => {
+            if (!window.AdMob) {
+                document.getElementById('adBanner').textContent = 'Web preview - ads disabled';
+            }
+        }, 1000);
+
     </script>
 </body>
-
 </html>
