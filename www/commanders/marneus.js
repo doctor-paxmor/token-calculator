@@ -4,6 +4,7 @@ window.CommanderConfigs.marneus = {
     name: "Marneus Calgar",
     baseStats: "5/5",
     primaryTokens: ['astartes'],
+    artPath: "assets/art/marneus.jpg",
     trackingLabels: ['ASTARTES', 'CARDS DRAWN', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE ASTARTES', action: 'createAstartesTokens', class: 'primary-btn' },

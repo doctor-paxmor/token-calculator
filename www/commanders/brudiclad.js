@@ -4,6 +4,7 @@ window.CommanderConfigs.brudiclad = {
     name: "Brudiclad, Telchor Engineer",
     baseStats: "4/4",
     primaryTokens: ['myr', 'treasure'],
+    artPath: "assets/art/brudiclad.jpg",
     trackingLabels: ['MYRS', 'TREASURES', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE MYR', action: 'createMyrToken', class: 'primary-btn' },

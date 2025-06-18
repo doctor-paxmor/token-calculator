@@ -4,6 +4,7 @@ window.CommanderConfigs.adrix = {
     name: "Adrix and Nev, Twincasters",
     baseStats: "2/2", 
     primaryTokens: ['generic'],
+    artPath: "assets/art/adrix.jpg",
     showCounters: false, // Don't show +1/+1 counters and trample for this commander
     trackingLabels: ['TOKENS', 'TOTAL', 'UNTAPPED', 'TAPPED'],
     mainActions: [

@@ -4,6 +4,7 @@ window.CommanderConfigs.chatterfang = {
     name: "Chatterfang, Squirrel General",
     baseStats: "3/3",
     primaryTokens: ['squirrel', 'treasure'],
+    artPath: "assets/art/chatterfang.jpg",
     trackingLabels: ['SQUIRRELS', 'TREASURES', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE SQUIRREL', action: 'createSquirrelToken', class: 'primary-btn' },

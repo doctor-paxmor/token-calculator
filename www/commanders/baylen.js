@@ -4,6 +4,7 @@ window.CommanderConfigs.baylen = {
     name: "Baylen, the Haymaker",
     baseStats: "4/3",
     primaryTokens: ['hare'],
+    artPath: "assets/art/baylen.jpg",
     trackingLabels: ['HARES', 'TOKENS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'PLAY HARE APPARENT', action: 'playHareApparent', class: 'primary-btn' },

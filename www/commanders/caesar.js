@@ -4,6 +4,7 @@ window.CommanderConfigs.caesar = {
     name: "Caesar, Legion's Emperor",
     baseStats: "4/4",
     primaryTokens: ['soldier'],
+    artPath: "assets/art/caesar.jpg",
     trackingLabels: ['SOLDIERS', 'SACRIFICED', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'ATTACK & SACRIFICE', action: 'attackAndSacrifice', class: 'primary-btn' },

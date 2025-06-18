@@ -4,6 +4,7 @@ window.CommanderConfigs.jinnie = {
     name: "Jinnie Fay, Jetmir's Second",
     baseStats: "3/3",
     primaryTokens: ['cat', 'dog'], 
+    artPath: "assets/art/jinnie.jpg",
     trackingLabels: ['CATS', 'DOGS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE CAT TOKEN', action: 'createCatToken', class: 'primary-btn' },

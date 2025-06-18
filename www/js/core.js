@@ -35,8 +35,8 @@ let availableCommanders = [];
 // Load available commanders from the commanders/ folder
 async function loadAvailableCommanders() {
     const commanderList = [
-        'baylen', 'chatterfang', 'caesar', 'marneus', 'jetmir', 
-        'adrix', 'jinnie', 'brenard', 'arabella', 'brudiclad', 'trostani', 'mahadi',
+        'baylen', 'chatterfang', 'caesar', 'marneus', 
+        'adrix', 'jinnie', 'brudiclad', 'mahadi',
     ];
     
     const select = document.getElementById('commanderSelect');
