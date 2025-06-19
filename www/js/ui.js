@@ -69,21 +69,89 @@ function updateMainActionButtons() {
     const buttonRow = document.getElementById('mainActionRow');
     buttonRow.innerHTML = '';
     
-    config.mainActions.forEach(action => {
-        const button = document.createElement('button');
-        button.textContent = action.text;
-        button.className = `btn ${action.class}`;
-        button.onclick = () => {
-            if (typeof config[action.action] === 'function') {
-                config[action.action]();
-            } else if (typeof window[action.action] === 'function') {
-                window[action.action]();
-            } else {
-                console.warn(`Action function ${action.action} not found`);
-            }
-        };
-        buttonRow.appendChild(button);
-    });
+    // Special handling for Adrix and Nev
+    if (config.name === "Adrix and Nev, Twincasters") {
+        buttonRow.style.gridTemplateColumns = '1fr 0.8fr';
+        buttonRow.style.gap = '8px';
+        
+        // Create CREATE TOKEN button
+        const createBtn = document.createElement('button');
+        createBtn.textContent = 'CREATE TOKEN';
+        createBtn.className = 'btn primary-btn';
+        createBtn.onclick = () => config.createGenericToken();
+        buttonRow.appendChild(createBtn);
+        
+        // Create toggle switch button
+        const toggleBtn = document.createElement('button');
+        toggleBtn.onclick = () => config.toggleCommandZone();
+        toggleBtn.style.cssText = `
+            position: relative;
+            background: #2d2d2d !important;
+            border: 1px solid #404040 !important;
+            border-radius: 6px !important;
+            height: 48px !important;
+            overflow: hidden;
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.15s ease;
+        `;
+        toggleBtn.innerHTML = `
+            <div style="
+                position: absolute;
+                top: 2px;
+                ${config.onBattlefield ? 'right: 2px;' : 'left: 2px;'}
+                width: calc(50% - 4px);
+                height: calc(100% - 4px);
+                background: ${config.onBattlefield ? '#107c10' : '#888'};
+                border-radius: 4px;
+                transition: all 0.3s ease;
+                z-index: 3;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                font-weight: 500;
+                color: white;
+                text-align: center;
+                line-height: 1.2;
+            ">${config.onBattlefield ? 'ON<br>BATTLEFIELD' : 'IN COMMAND<br>ZONE'}</div>
+        `;
+        buttonRow.appendChild(toggleBtn);
+        
+    } else {
+        // Standard layout for all other commanders
+        buttonRow.style.gridTemplateColumns = '1fr 1fr';
+        buttonRow.style.gap = '6px';
+        
+        config.mainActions.forEach(action => {
+            const button = document.createElement('button');
+            button.textContent = action.text;
+            button.className = `btn ${action.class}`;
+            button.onclick = () => {
+                if (typeof config[action.action] === 'function') {
+                    config[action.action]();
+                } else if (typeof window[action.action] === 'function') {
+                    window[action.action]();
+                } else {
+                    console.warn(`Action function ${action.action} not found`);
+                }
+            };
+            buttonRow.appendChild(button);
+        });
+    }
+}
+
+// Global function to handle command zone toggling for current commander
+function toggleCurrentCommanderZone() {
+    const config = gameState.currentCommanderConfig;
+    if (config && typeof config.toggleCommandZone === 'function') {
+        config.toggleCommandZone();
+    }
 }
 
 function updateAbilityButtons() {

@@ -5,20 +5,18 @@ window.CommanderConfigs.adrix = {
     baseStats: "2/2", 
     primaryTokens: ['generic'],
     artPath: "assets/art/adrix.jpg",
-    showCounters: false, // Don't show +1/+1 counters and trample for this commander
-    trackingLabels: ['TOKENS', 'TOTAL', 'UNTAPPED', 'TAPPED'],
+    showCounters: false,
+    trackingLabels: ['TOKENS', 'VALUE', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE TOKEN', action: 'createGenericToken', class: 'primary-btn' },
-        { text: 'IN COMMAND ZONE', action: 'toggleCommandZone', class: 'warning-btn' }
+        { text: 'ON BATTLEFIELD', action: 'toggleCommandZone', class: 'toggle-switch-special' }
     ],
-    abilities: [
-        // Adrix and Nev have no activated abilities - just Ward 2 and doubling trigger
-    ],
+    abilities: [],
     
     // Track if Adrix and Nev are on the battlefield
     onBattlefield: true,
     
-    // Adrix and Nev specific functions
+    // CREATE TOKEN function
     createGenericToken: function() {
         const baseTokens = 1;
         let finalTokens = applyTokenMultipliers(baseTokens);
@@ -38,31 +36,8 @@ window.CommanderConfigs.adrix = {
     // Toggle between command zone and battlefield
     toggleCommandZone: function() {
         this.onBattlefield = !this.onBattlefield;
-        
-        // Update the button text and class in mainActions
-        this.mainActions[1].text = this.onBattlefield ? 'ON BATTLEFIELD' : 'IN COMMAND ZONE';
-        this.mainActions[1].class = this.onBattlefield ? 'success-btn' : 'warning-btn';
-        
         addToHistory(this.onBattlefield ? `Adrix and Nev: On battlefield` : `Adrix and Nev: In command zone`);
-        
-        // Update the main actions to reflect the new state
-        updateMainActionButtons();
-        updateDisplay();
-    },
-    
-    // Create multiple tokens at once (useful for replacing other token effects)
-    createMultipleTokens: function(amount) {
-        let finalTokens = applyTokenMultipliers(amount);
-        
-        // Apply Adrix doubling if on battlefield
-        if (this.onBattlefield) {
-            finalTokens *= 2;
-            addToHistory(`+${amount} Tokens → +${finalTokens} (Twincasters doubled)`);
-        } else {
-            addToHistory(`+${finalTokens} Tokens`);
-        }
-        
-        gameState.tokenCounts.generic.untapped += finalTokens;
+        updateMainActionButtons(); // Refresh the UI
         updateDisplay();
     },
     
@@ -70,7 +45,7 @@ window.CommanderConfigs.adrix = {
     getStatusValue: function(index) {
         switch(index) {
             case 0: return getTotalTokens(); // TOKENS
-            case 1: return calculateTotalCombatDamage(); // VALUE (combat damage potential)
+            case 1: return calculateTotalCombatDamage(); // VALUE
             case 2: return getTotalUntapped(); // UNTAPPED
             case 3: return getTotalTapped(); // TAPPED
             default: return 0;
