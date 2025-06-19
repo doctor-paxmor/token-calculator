@@ -202,8 +202,20 @@ function updateMainActionButtons() {
         buttonRow.appendChild(toggleBtn);
         
     } else {
-        // Standard layout for all other commanders
-        buttonRow.style.gridTemplateColumns = '1fr 1fr';
+        // Dynamic layout based on number of buttons
+        const buttonCount = config.mainActions.length;
+        
+        if (buttonCount === 1) {
+            buttonRow.style.gridTemplateColumns = '1fr';
+        } else if (buttonCount === 2) {
+            buttonRow.style.gridTemplateColumns = '1fr 1fr';
+        } else if (buttonCount === 3) {
+            buttonRow.style.gridTemplateColumns = '1fr 1fr 1fr';
+        } else {
+            // Fallback for 4+ buttons
+            buttonRow.style.gridTemplateColumns = 'repeat(auto-fit, minmax(80px, 1fr))';
+        }
+        
         buttonRow.style.gap = '6px';
         
         config.mainActions.forEach(action => {

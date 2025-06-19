@@ -3,17 +3,16 @@ window.CommanderConfigs = window.CommanderConfigs || {};
 window.CommanderConfigs.chatterfang = {
     name: "Chatterfang, Squirrel General",
     baseStats: "3/3",
-    primaryTokens: ['squirrel', 'treasure'],
+    primaryTokens: ['squirrel'],
     artPath: "assets/art/chatterfang.jpg",
-    trackingLabels: ['SQUIRRELS', 'TREASURES', 'UNTAPPED', 'TAPPED'],
+    trackingLabels: ['SQUIRRELS', 'OTHER TOKENS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
-        { text: 'CREATE SQUIRREL', action: 'createSquirrelToken', class: 'primary-btn' },
-        { text: 'CREATE TREASURE', action: 'createTreasureToken', class: 'success-btn' }
+        { text: 'CREATE SQUIRREL', action: 'createSquirrelToken', class: 'primary-btn' }
     ],
     abilities: [
-        { cost: 'X', name: "SACRIFICE", description: "X, SAC X\n+X/-X" },
         { cost: 0, name: "FORESTWALK", description: "PASSIVE\nFORESTWALK" },
-        { cost: 0, name: "DOUBLER", description: "PASSIVE\nDOUBLE TOKENS" }
+        { cost: 0, name: "REPLACEMENT", description: "PASSIVE\n+SQUIRRELS" },
+        { cost: 'B', name: "PUMP", description: "B, SAC X\n+X/-X" }
     ],
     
     // Commander-specific token generation functions
@@ -23,54 +22,35 @@ window.CommanderConfigs.chatterfang = {
         
         gameState.tokenCounts.squirrel.untapped += finalTokens;
         
-        if (finalTokens !== baseTokens) {
-            addToHistory(`+${baseTokens} Squirrel → +${finalTokens} (modified)`);
-        } else {
-            addToHistory(`+${finalTokens} Squirrel`);
-        }
-        updateDisplay();
-    },
-    
-    createTreasureToken: function() {
-        const baseTokens = 1;
-        const finalTokens = applyTokenMultipliers(baseTokens);
-        
-        // With Chatterfang, creating treasures also creates squirrels
-        gameState.tokenCounts.treasure.untapped += finalTokens;
+        // Chatterfang's replacement effect triggers - add squirrels for the tokens created
         gameState.tokenCounts.squirrel.untapped += finalTokens;
         
-        addToHistory(`+${finalTokens} Treasure +${finalTokens} Squirrel`);
+        if (finalTokens !== baseTokens) {
+            addToHistory(`+${baseTokens} Squirrel → +${finalTokens} + ${finalTokens} more (replacement)`);
+        } else {
+            addToHistory(`+${finalTokens} Squirrel + ${finalTokens} more (replacement effect)`);
+        }
         updateDisplay();
     },
     
-    sacrificeSquirrels: function(amount) {
-        const available = gameState.tokenCounts.squirrel.untapped + gameState.tokenCounts.squirrel.tapped;
-        const toSacrifice = Math.min(amount, available);
-        
-        if (toSacrifice > 0) {
-            // Remove from untapped first, then tapped
-            let remaining = toSacrifice;
-            const fromUntapped = Math.min(remaining, gameState.tokenCounts.squirrel.untapped);
-            gameState.tokenCounts.squirrel.untapped -= fromUntapped;
-            remaining -= fromUntapped;
-            
-            if (remaining > 0) {
-                gameState.tokenCounts.squirrel.tapped -= remaining;
-            }
-            
-            addToHistory(`Sacrifice ${toSacrifice} squirrels for +${toSacrifice}/-${toSacrifice}`);
-            updateDisplay();
-        }
-        return toSacrifice;
-    },
-    
-    // Special ability handlers
+    // Special ability handlers - Chatterfang's replacement effect
     onTokenCreated: function(tokenType, amount) {
         // Chatterfang's replacement effect - whenever tokens are created, also create squirrels
         if (tokenType !== 'squirrel') {
             gameState.tokenCounts.squirrel.untapped += amount;
-            return `Also created ${amount} Squirrel${amount > 1 ? 's' : ''}`;
+            return `Also created ${amount} Squirrel${amount > 1 ? 's' : ''} (Chatterfang)`;
         }
         return null;
+    },
+    
+    // Status display customization
+    getStatusValue: function(index) {
+        switch(index) {
+            case 0: return gameState.tokenCounts.squirrel.untapped + gameState.tokenCounts.squirrel.tapped; // SQUIRRELS
+            case 1: return getTotalTokens() - (gameState.tokenCounts.squirrel.untapped + gameState.tokenCounts.squirrel.tapped); // OTHER TOKENS
+            case 2: return getTotalUntapped(); // UNTAPPED
+            case 3: return getTotalTapped(); // TAPPED
+            default: return 0;
+        }
     }
 };
