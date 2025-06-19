@@ -230,7 +230,6 @@ function updateCommanderInfo() {
     // Only show commander info if explicitly enabled
     if (config.showCommanderInfo === true) {
         // Show the element
-        commanderInfo.parentElement.style.display = 'block';
         commanderInfo.classList.remove('hidden');
         
         // Check if commander has custom display info function
@@ -245,8 +244,8 @@ function updateCommanderInfo() {
             `;
         }
     } else {
-        // Hide the entire container
-        commanderInfo.parentElement.style.display = 'none';
+        // Hide commander info completely
+        commanderInfo.classList.add('hidden');
         commanderInfo.innerHTML = '';
     }
 }
