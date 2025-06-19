@@ -16,7 +16,8 @@ let gameState = {
         squirrel: { untapped: 0, tapped: 0 },
         treasure: { untapped: 0, tapped: 0 },
         food: { untapped: 0, tapped: 0 },
-        generic: { untapped: 0, tapped: 0 }
+        generic: { untapped: 0, tapped: 0 },
+        goblin: { untapped: 0, tapped: 0 }
     },
     hareCount: 0,
     availableMana: 0,
@@ -36,7 +37,7 @@ let availableCommanders = [];
 async function loadAvailableCommanders() {
     const commanderList = [
         'adrix', 'baylen',
-        'chatterfang', 'jinnie', 'mahadi', 'rinseri'
+        'chatterfang', 'jinnie', 'krenko-mob', 'mahadi', 'rinseri'
     ];
 
     const select = document.getElementById('commanderSelect');
@@ -296,7 +297,8 @@ function resetBattlefield() {
             squirrel: { untapped: 0, tapped: 0 },
             treasure: { untapped: 0, tapped: 0 },
             food: { untapped: 0, tapped: 0 },
-            generic: { untapped: 0, tapped: 0 }
+            generic: { untapped: 0, tapped: 0 },
+            goblin: { untapped: 0, tapped: 0 }
         },
         hareCount: 0,
         availableMana: 0,
@@ -350,6 +352,7 @@ function createMyrToken() { delegateToCommander('createMyrToken'); }
 function createFoodToken() { delegateToCommander('createFoodToken'); }
 function createSpiritToken() { delegateToCommander('createSpiritToken'); }
 function createAstartesTokens() { delegateToCommander('createAstartesTokens'); }
+function createGoblinToken() { delegateToCommander('createGoblinToken'); }
 
 // Special abilities
 function populate() { delegateToCommander('populate'); }
