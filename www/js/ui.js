@@ -5,6 +5,7 @@ function updateDisplay() {
     updateMainDisplay();
     updateModifierToggles();
     updateAbilityButtons();
+    updateCommanderInfo();
     updateCommanderArt();
 }
 
@@ -226,16 +227,27 @@ function updateCommanderInfo() {
     
     const commanderInfo = document.getElementById('commanderInfo');
     
-    // Check if commander has custom display info function
-    if (typeof config.getCommanderDisplayInfo === 'function') {
-        // Use commander-specific display info
-        const displayInfo = config.getCommanderDisplayInfo();
-        commanderInfo.innerHTML = displayInfo;
+    // Only show commander info if explicitly enabled
+    if (config.showCommanderInfo === true) {
+        // Show the element
+        commanderInfo.parentElement.style.display = 'block';
+        commanderInfo.classList.remove('hidden');
+        
+        // Check if commander has custom display info function
+        if (typeof config.getCommanderDisplayInfo === 'function') {
+            // Use commander-specific display info
+            const displayInfo = config.getCommanderDisplayInfo();
+            commanderInfo.innerHTML = displayInfo;
+        } else {
+            // Fallback to basic display (name and stats only)
+            commanderInfo.innerHTML = `
+                <span>${config.name}: ${config.baseStats}</span>
+            `;
+        }
     } else {
-        // Fallback to basic display (name and stats only)
-        commanderInfo.innerHTML = `
-            <span>${config.name}: ${config.baseStats}</span>
-        `;
+        // Hide the entire container
+        commanderInfo.parentElement.style.display = 'none';
+        commanderInfo.innerHTML = '';
     }
 }
 
@@ -407,3 +419,12 @@ async function loadBannerAd() {
         console.log('Banner ad error:', error);
     }
 }
+
+// Add CSS rule for hiding commander info
+const style = document.createElement('style');
+style.textContent = `
+    .commander-info.hidden {
+        display: none !important;
+    }
+`;
+document.head.appendChild(style);

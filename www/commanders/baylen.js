@@ -5,6 +5,7 @@ window.CommanderConfigs.baylen = {
     baseStats: "4/3",
     primaryTokens: ['hare'],
     artPath: "assets/art/baylen.jpg",
+    showCommanderInfo: true,
     trackingLabels: ['HARES', 'TOKENS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'PLAY HARE APPARENT', action: 'playHareApparent', class: 'primary-btn' },

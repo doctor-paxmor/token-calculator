@@ -6,7 +6,7 @@ window.CommanderConfigs.adrix = {
     primaryTokens: ['generic'],
     artPath: "assets/art/adrix.jpg",
     showCounters: false,
-    trackingLabels: ['TOKENS', 'VALUE', 'UNTAPPED', 'TAPPED'],
+    trackingLabels: ['TOKENS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE TOKEN', action: 'createGenericToken', class: 'primary-btn' },
         { text: 'ON BATTLEFIELD', action: 'toggleCommandZone', class: 'toggle-switch-special' }
@@ -45,9 +45,8 @@ window.CommanderConfigs.adrix = {
     getStatusValue: function(index) {
         switch(index) {
             case 0: return getTotalTokens(); // TOKENS
-            case 1: return calculateTotalCombatDamage(); // VALUE
-            case 2: return getTotalUntapped(); // UNTAPPED
-            case 3: return getTotalTapped(); // TAPPED
+            case 1: return getTotalUntapped(); // UNTAPPED
+            case 2: return getTotalTapped(); // TAPPED
             default: return 0;
         }
     }
