@@ -322,7 +322,17 @@ function resetBattlefield() {
 }
 
 // Initialize the app
-function initializeApp() {
+async function initializeApp() {
+    // Lock to portrait orientation
+    try {
+        const { ScreenOrientation } = window.Capacitor.Plugins;
+        if (ScreenOrientation) {
+            await ScreenOrientation.lock({ orientation: 'portrait' });
+        }
+    } catch (error) {
+        console.log('Screen orientation lock not available:', error);
+    }
+    
     updateDisplay();
     updateHistoryDisplay();
     setTimeout(initializeAds, 2000);
