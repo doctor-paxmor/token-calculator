@@ -20,27 +20,53 @@ function updateStatusDisplay() {
     
     const labels = config.trackingLabels || ['TOKENS', 'VALUE', 'UNTAPPED', 'TAPPED'];
     
+    // Count valid labels (non-empty)
+    const validLabels = labels.filter(label => label && label.trim() !== '');
+    const validCount = validLabels.length;
+    
+    // Get the status grid container
+    const statusGrid = document.querySelector('.status-grid');
+    
+    // Update grid layout based on number of valid labels
+    if (validCount === 3) {
+        statusGrid.style.gridTemplateColumns = '1fr 1fr 1fr';
+    } else if (validCount === 2) {
+        statusGrid.style.gridTemplateColumns = '1fr 1fr';
+    } else if (validCount === 1) {
+        statusGrid.style.gridTemplateColumns = '1fr';
+    } else {
+        statusGrid.style.gridTemplateColumns = 'repeat(4, 1fr)'; // Default 4 columns
+    }
+    
     // Update status labels and values
     for (let i = 0; i < 4; i++) {
-        const statusCell = document.querySelector(`#status${i}`);
-        const statusLabel = statusCell.parentElement.querySelector('.status-label');
+        const statusCell = document.querySelector(`#status${i}`).parentElement;
+        const statusLabel = statusCell.querySelector('.status-label');
+        const statusNumber = statusCell.querySelector(`#status${i}`);
         
-        statusLabel.textContent = labels[i] || '';
-        
-        let value = 0;
-        if (typeof config.getStatusValue === 'function') {
-            value = config.getStatusValue(i);
-        } else {
-            // Default status values
-            switch(i) {
-                case 0: value = getTotalTokens(); break;
-                case 1: value = calculateTotalCombatDamage(); break;
-                case 2: value = getTotalUntapped(); break;
-                case 3: value = getTotalTapped(); break;
+        if (i < validCount && labels[i] && labels[i].trim() !== '') {
+            // Show this cell
+            statusCell.style.display = 'block';
+            statusLabel.textContent = labels[i];
+            
+            let value = 0;
+            if (typeof config.getStatusValue === 'function') {
+                value = config.getStatusValue(i);
+            } else {
+                // Default status values
+                switch(i) {
+                    case 0: value = getTotalTokens(); break;
+                    case 1: value = calculateTotalCombatDamage(); break;
+                    case 2: value = getTotalUntapped(); break;
+                    case 3: value = getTotalTapped(); break;
+                }
             }
+            
+            statusNumber.textContent = value;
+        } else {
+            // Hide this cell
+            statusCell.style.display = 'none';
         }
-        
-        statusCell.textContent = value;
     }
 }
 
