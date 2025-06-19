@@ -243,25 +243,234 @@ body {
     justify-content: space-between;
 }
 
-.commander-select {
+/* Custom Dark Dropdown - No More White Flashbang! */
+.commander-select-container {
+    margin-top: 12px;
+    position: relative;
+}
+
+.commander-select-label {
+    font-size: 11px;
+    color: #999;
+    margin-bottom: 6px;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.custom-select {
+    position: relative;
     width: 100%;
-    background: #2d2d2d;
-    border: 1px solid #404040;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 12px;
-    padding: 8px;
+}
+
+.custom-select-trigger {
+    width: 100%;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #f0f0f0;
+    font-size: 13px;
+    padding: 12px 40px 12px 16px;
     font-family: inherit;
+    font-weight: 500;
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
 }
 
-.commander-select:focus {
+.custom-select-trigger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    border-radius: 12px;
+}
+
+.custom-select-trigger:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+}
+
+.custom-select-trigger:focus {
     outline: none;
-    border-color: #0078d4;
+    border-color: rgba(64, 150, 255, 0.6);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        0 0 0 3px rgba(64, 150, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
 }
 
-.commander-select option {
-    background: #2d2d2d;
-    color: #fff;
+.custom-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+}
+
+.custom-select-arrow svg {
+    width: 100%;
+    height: 100%;
+    stroke: rgba(255, 255, 255, 0.5);
+    transition: stroke 0.3s ease;
+}
+
+.custom-select-trigger:hover .custom-select-arrow svg {
+    stroke: rgba(255, 255, 255, 0.7);
+}
+
+.custom-select.open .custom-select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 4px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+/* Smart positioning - flip upward if not enough space below */
+.custom-select.flip-up .custom-select-dropdown {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 4px;
+    transform: translateY(8px);
+}
+
+.custom-select.flip-up.open .custom-select-dropdown {
+    transform: translateY(0);
+}
+
+/* Mobile-first responsive dropdown */
+@media (max-height: 600px) {
+    .custom-select-dropdown {
+        max-height: 180px;
+    }
+}
+
+.custom-select.open .custom-select-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.custom-select-option {
+    padding: 12px 16px;
+    color: #f0f0f0;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-select-option:last-child {
+    border-bottom: none;
+    border-radius: 0 0 12px 12px;
+}
+
+.custom-select-option:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.custom-select-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+.custom-select-option.selected {
+    background: linear-gradient(135deg, #4096ff 0%, #3579dc 100%);
+    color: white;
+    font-weight: 600;
+}
+
+.custom-select-option.selected:hover {
+    background: linear-gradient(135deg, #5aa7ff 0%, #4088e8 100%);
+    transform: translateX(0);
+}
+
+/* Scrollbar for dropdown */
+.custom-select-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Dropdown backdrop for mobile */
+.dropdown-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+    .dropdown-backdrop.active {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Hide the original select completely */
+.commander-select {
+    display: none;
 }
 
 /* Commander Art Styling */
@@ -451,8 +660,7 @@ body {
 }
 
 /* Focus states for accessibility */
-.btn:focus,
-.commander-select:focus {
+.btn:focus {
     outline: 2px solid #0078d4;
     outline-offset: 2px;
 }
@@ -477,6 +685,18 @@ body {
     .loading::after {
         animation: none;
     }
+    
+    .custom-select-trigger,
+    .custom-select-dropdown,
+    .custom-select-arrow {
+        transition: none;
+        transform: none;
+    }
+    
+    .custom-select-trigger:hover,
+    .custom-select-trigger:focus {
+        transform: none;
+    }
 }
 
 /* Dark theme enhancements */
@@ -485,4 +705,9 @@ body {
         background: #000000;
         color: #ffffff;
     }
+}
+
+/* Add CSS rule for hiding commander info */
+.commander-info.hidden {
+    display: none !important;
 }

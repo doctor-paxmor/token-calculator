@@ -40,7 +40,7 @@ async function loadAvailableCommanders() {
     ];
 
     const select = document.getElementById('commanderSelect');
-    select.innerHTML = '<option value="">Select Commander...</option>';
+    select.innerHTML = '<option value="">Choose your commander...</option>';
 
     for (const commanderId of commanderList) {
         try {
@@ -64,6 +64,11 @@ async function loadAvailableCommanders() {
         gameState.currentCommander = availableCommanders[0];
         select.value = gameState.currentCommander;
         await applyCommanderConfig();
+    }
+
+    // Trigger custom dropdown update if it exists
+    if (typeof populateCustomDropdown === 'function') {
+        populateCustomDropdown();
     }
 }
 

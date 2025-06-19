@@ -1,5 +1,56 @@
 // js/ui.js - UI update and display management
 
+// Global reference for custom dropdown population
+function populateCustomDropdown() {
+    const dropdown = document.getElementById('customSelectDropdown');
+    const valueDisplay = document.getElementById('customSelectValue');
+    const originalSelect = document.getElementById('commanderSelect');
+    
+    if (!dropdown || !originalSelect) return;
+
+    dropdown.innerHTML = '';
+    
+    // Only add actual commander options (NO placeholder option)
+    originalSelect.querySelectorAll('option[value]:not([value=""])').forEach(option => {
+        const customOption = document.createElement('div');
+        customOption.className = 'custom-select-option';
+        customOption.textContent = option.textContent;
+        customOption.onclick = () => selectCustomOption(option.value, option.textContent);
+        
+        if (option.value === gameState.currentCommander) {
+            customOption.classList.add('selected');
+            valueDisplay.textContent = option.textContent;
+        }
+        
+        dropdown.appendChild(customOption);
+    });
+}
+
+function selectCustomOption(value, text) {
+    const valueDisplay = document.getElementById('customSelectValue');
+    const originalSelect = document.getElementById('commanderSelect');
+    const customSelect = document.getElementById('commanderCustomSelect');
+    const backdrop = document.getElementById('dropdownBackdrop');
+    
+    valueDisplay.textContent = text;
+    originalSelect.value = value;
+    
+    // Close dropdown and backdrop
+    customSelect.classList.remove('open');
+    backdrop.classList.remove('active');
+    
+    // Update game state if commander changed
+    if (value !== gameState.currentCommander) {
+        gameState.currentCommander = value;
+        gameState.commanderCounters = 0;
+        gameState.commanderHasTrample = false;
+        applyCommanderConfig();
+        
+        // Update custom dropdown to show selection
+        populateCustomDropdown();
+    }
+}
+
 function updateDisplay() {
     updateStatusDisplay();
     updateMainDisplay();

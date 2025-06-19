@@ -114,10 +114,30 @@
                     </button>
                 </div>
                 
-                <div style="margin-top: 8px;">
-                    <div style="font-size: 10px; color: #888; margin-bottom: 4px; text-align: center;">SELECT COMMANDER</div>
-                    <select id="commanderSelect" onchange="changeCommander()" class="commander-select">
-                        <option value="">Loading commanders...</option>
+                <div class="commander-select-container">
+                    <div class="commander-select-label">SELECT COMMANDER</div>
+                    
+                    <!-- Custom Dropdown -->
+                    <div class="custom-select" id="commanderCustomSelect">
+                        <div class="custom-select-trigger" id="customSelectTrigger" tabindex="0">
+                            <span id="customSelectValue">Choose your commander...</span>
+                            <div class="custom-select-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6,9 12,15 18,9"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="custom-select-dropdown" id="customSelectDropdown">
+                            <!-- Options will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Dropdown backdrop for mobile -->
+                    <div class="dropdown-backdrop" id="dropdownBackdrop"></div>
+                    
+                    <!-- Hidden original select for compatibility -->
+                    <select id="commanderSelect" class="commander-select">
+                        <option value="">Choose your commander...</option>
                     </select>
                 </div>
             </div>
@@ -148,9 +168,127 @@
     <script src="js/tokenLogic.js"></script>
     <script src="js/ui.js"></script>
     <script>
+        // Custom dropdown functionality
+        function initializeCustomDropdown() {
+            const customSelect = document.getElementById('commanderCustomSelect');
+            const trigger = document.getElementById('customSelectTrigger');
+            const dropdown = document.getElementById('customSelectDropdown');
+            const valueDisplay = document.getElementById('customSelectValue');
+            const originalSelect = document.getElementById('commanderSelect');
+            const backdrop = document.getElementById('dropdownBackdrop');
+
+            // Smart positioning - check if dropdown would go off screen
+            function checkPosition() {
+                const rect = trigger.getBoundingClientRect();
+                const dropdownHeight = 240; // max-height of dropdown
+                const viewportHeight = window.innerHeight;
+                const spaceBelow = viewportHeight - rect.bottom;
+                const spaceAbove = rect.top;
+
+                // If not enough space below but enough above, flip up
+                if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+                    customSelect.classList.add('flip-up');
+                } else {
+                    customSelect.classList.remove('flip-up');
+                }
+            }
+
+            // Toggle dropdown open/close
+            function toggleDropdown() {
+                const isOpen = customSelect.classList.contains('open');
+                
+                if (isOpen) {
+                    closeDropdown();
+                } else {
+                    checkPosition();
+                    customSelect.classList.add('open');
+                    backdrop.classList.add('active');
+                }
+            }
+
+            // Close dropdown
+            function closeDropdown() {
+                customSelect.classList.remove('open');
+                backdrop.classList.remove('active');
+            }
+
+            // Select option
+            function selectOption(value, text) {
+                valueDisplay.textContent = text;
+                originalSelect.value = value;
+                closeDropdown();
+                
+                // Update game state
+                if (value !== gameState.currentCommander) {
+                    gameState.currentCommander = value;
+                    gameState.commanderCounters = 0;
+                    gameState.commanderHasTrample = false;
+                    applyCommanderConfig();
+                }
+            }
+
+            // Populate dropdown options (NO placeholder option)
+            function populateDropdown() {
+                dropdown.innerHTML = '';
+                
+                // Only add actual commander options (skip the placeholder)
+                originalSelect.querySelectorAll('option[value]:not([value=""])').forEach(option => {
+                    const customOption = document.createElement('div');
+                    customOption.className = 'custom-select-option';
+                    customOption.textContent = option.textContent;
+                    customOption.onclick = () => selectOption(option.value, option.textContent);
+                    
+                    if (option.value === gameState.currentCommander) {
+                        customOption.classList.add('selected');
+                        valueDisplay.textContent = option.textContent;
+                    }
+                    
+                    dropdown.appendChild(customOption);
+                });
+            }
+
+            // Event listeners
+            trigger.addEventListener('click', toggleDropdown);
+            trigger.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleDropdown();
+                }
+            });
+
+            // Close dropdown when clicking backdrop or outside
+            backdrop.addEventListener('click', closeDropdown);
+            document.addEventListener('click', (e) => {
+                if (!customSelect.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            // Close on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeDropdown();
+                }
+            });
+
+            // Reposition on window resize/orientation change
+            window.addEventListener('resize', () => {
+                if (customSelect.classList.contains('open')) {
+                    checkPosition();
+                }
+            });
+
+            // Initialize
+            populateDropdown();
+
+            // Update when original select changes
+            originalSelect.addEventListener('change', populateDropdown);
+        }
+
         // Initialize app when everything loads
         document.addEventListener('DOMContentLoaded', async function() {
             await loadAvailableCommanders();
+            initializeCustomDropdown();
             initializeApp();
         });
     </script>
