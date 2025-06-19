@@ -36,7 +36,7 @@ let availableCommanders = [];
 async function loadAvailableCommanders() {
     const commanderList = [
         'adrix', 'baylen',
-        'chatterfang', 'jinnie', 'mahadi', 'marneus', 'rinseri'
+        'chatterfang', 'jinnie', 'mahadi', 'rinseri'
     ];
 
     const select = document.getElementById('commanderSelect');
