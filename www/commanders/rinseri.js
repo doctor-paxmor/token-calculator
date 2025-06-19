@@ -1,4 +1,4 @@
-// commanders/rinseri.js
+// commanders/rinseri.js - Updated for isolated commander states
 window.CommanderConfigs = window.CommanderConfigs || {};
 window.CommanderConfigs.rinseri = {
     name: "Rin and Seri, Inseparable",
@@ -17,11 +17,14 @@ window.CommanderConfigs.rinseri = {
     
     // Rin and Seri specific functions
     castDogSpell: function() {
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
+        
         // Whenever you cast a Dog spell, create a 1/1 green Cat creature token
         const baseTokens = 1;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
-        gameState.tokenCounts.cat.untapped += finalTokens;
+        currentState.tokenCounts.cat.untapped += finalTokens;
         
         if (finalTokens !== baseTokens) {
             addToHistory(`Cast Dog spell → +${baseTokens} Cat → +${finalTokens} (modified)`);
@@ -32,11 +35,14 @@ window.CommanderConfigs.rinseri = {
     },
     
     castCatSpell: function() {
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
+        
         // Whenever you cast a Cat spell, create a 1/1 white Dog creature token
         const baseTokens = 1;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
-        gameState.tokenCounts.dog.untapped += finalTokens;
+        currentState.tokenCounts.dog.untapped += finalTokens;
         
         if (finalTokens !== baseTokens) {
             addToHistory(`Cast Cat spell → +${baseTokens} Dog → +${finalTokens} (modified)`);
@@ -48,8 +54,11 @@ window.CommanderConfigs.rinseri = {
     
     // Activated ability: {R}{G}{W}, {T}: Deal damage equal to Dogs, gain life equal to Cats
     useDamageLifeAbility: function() {
-        const dogCount = gameState.tokenCounts.dog.untapped + gameState.tokenCounts.dog.tapped;
-        const catCount = gameState.tokenCounts.cat.untapped + gameState.tokenCounts.cat.tapped;
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
+        
+        const dogCount = currentState.tokenCounts.dog.untapped + currentState.tokenCounts.dog.tapped;
+        const catCount = currentState.tokenCounts.cat.untapped + currentState.tokenCounts.cat.tapped;
         
         if (dogCount > 0 || catCount > 0) {
             let result = [];
@@ -65,9 +74,12 @@ window.CommanderConfigs.rinseri = {
     
     // Calculate total combat damage potential
     calculateCombatDamage: function() {
-        const catCount = gameState.tokenCounts.cat.untapped + gameState.tokenCounts.cat.tapped;
-        const dogCount = gameState.tokenCounts.dog.untapped + gameState.tokenCounts.dog.tapped;
-        const rinSeriPower = 4 + gameState.commanderCounters;
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return 0;
+        
+        const catCount = currentState.tokenCounts.cat.untapped + currentState.tokenCounts.cat.tapped;
+        const dogCount = currentState.tokenCounts.dog.untapped + currentState.tokenCounts.dog.tapped;
+        const rinSeriPower = 4 + currentState.commanderCounters;
         
         // Cats are 1/1, Dogs are 1/1
         const catDamage = catCount * 1;
@@ -80,8 +92,11 @@ window.CommanderConfigs.rinseri = {
     
     // Quick reference for activated ability
     checkActivatedAbility: function() {
-        const dogCount = gameState.tokenCounts.dog.untapped + gameState.tokenCounts.dog.tapped;
-        const catCount = gameState.tokenCounts.cat.untapped + gameState.tokenCounts.cat.tapped;
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return { damage: 0, life: 0 };
+        
+        const dogCount = currentState.tokenCounts.dog.untapped + currentState.tokenCounts.dog.tapped;
+        const catCount = currentState.tokenCounts.cat.untapped + currentState.tokenCounts.cat.tapped;
         
         addToHistory(`Current: ${dogCount} Dogs (damage), ${catCount} Cats (life gain)`);
         return { damage: dogCount, life: catCount };
@@ -89,9 +104,14 @@ window.CommanderConfigs.rinseri = {
     
     // Status display customization
     getStatusValue: function(index) {
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return 0;
+        
+        const tokenCounts = currentState.tokenCounts;
+        
         switch(index) {
-            case 0: return gameState.tokenCounts.cat.untapped + gameState.tokenCounts.cat.tapped; // CATS
-            case 1: return gameState.tokenCounts.dog.untapped + gameState.tokenCounts.dog.tapped; // DOGS
+            case 0: return tokenCounts.cat.untapped + tokenCounts.cat.tapped; // CATS
+            case 1: return tokenCounts.dog.untapped + tokenCounts.dog.tapped; // DOGS
             case 2: return getTotalUntapped(); // UNTAPPED
             case 3: return getTotalTapped(); // TAPPED
             default: return 0;
@@ -100,8 +120,11 @@ window.CommanderConfigs.rinseri = {
     
     // Commander info display
     getCommanderDisplayInfo: function() {
-        const catCount = gameState.tokenCounts.cat.untapped + gameState.tokenCounts.cat.tapped;
-        const dogCount = gameState.tokenCounts.dog.untapped + gameState.tokenCounts.dog.tapped;
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return '';
+        
+        const catCount = currentState.tokenCounts.cat.untapped + currentState.tokenCounts.cat.tapped;
+        const dogCount = currentState.tokenCounts.dog.untapped + currentState.tokenCounts.dog.tapped;
         return `
             <span>Rin & Seri: 4/4</span>
             <span>Damage: ${dogCount}</span>

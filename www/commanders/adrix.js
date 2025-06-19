@@ -1,4 +1,4 @@
-// commanders/adrix.js
+// commanders/adrix.js - Updated for isolated commander states
 window.CommanderConfigs = window.CommanderConfigs || {};
 window.CommanderConfigs.adrix = {
     name: "Adrix and Nev, Twincasters",
@@ -6,47 +6,56 @@ window.CommanderConfigs.adrix = {
     primaryTokens: ['generic'],
     artPath: "assets/art/adrix.jpg",
     showCounters: false,
-    trackingLabels: ['TOKENS', 'UNTAPPED', 'TAPPED'],
+    trackingLabels: ['TOKENS', 'BATTLEFIELD', 'UNTAPPED', 'TAPPED'],
     mainActions: [
-        { text: 'CREATE TOKEN', action: 'createGenericToken', class: 'primary-btn' },
-        { text: 'ON BATTLEFIELD', action: 'toggleCommandZone', class: 'toggle-switch-special' }
+        { text: 'CREATE TOKEN', action: 'createGenericToken', class: 'primary-btn' }
     ],
-    abilities: [],
-    
-    // Track if Adrix and Nev are on the battlefield
-    onBattlefield: false,
+    abilities: [
+        { cost: 0, name: "TOGGLE ZONE", description: "TOGGLE\nZONE" }
+    ],
     
     // CREATE TOKEN function
     createGenericToken: function() {
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
+        
         const baseTokens = 1;
         let finalTokens = applyTokenMultipliers(baseTokens);
         
         // Adrix and Nev's ability: double token creation (only if on battlefield)
-        if (this.onBattlefield) {
+        if (currentState.onBattlefield) {
             finalTokens *= 2;
             addToHistory(`+${baseTokens} Token → +${finalTokens} (Twincasters doubled)`);
         } else {
             addToHistory(`+${finalTokens} Token`);
         }
         
-        gameState.tokenCounts.generic.untapped += finalTokens;
+        currentState.tokenCounts.generic.untapped += finalTokens;
         updateDisplay();
     },
     
     // Toggle between command zone and battlefield
     toggleCommandZone: function() {
-        this.onBattlefield = !this.onBattlefield;
-        addToHistory(this.onBattlefield ? `Adrix and Nev: On battlefield` : `Adrix and Nev: In command zone`);
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
+        
+        currentState.onBattlefield = !currentState.onBattlefield;
+        addToHistory(currentState.onBattlefield ? `Adrix and Nev: On battlefield` : `Adrix and Nev: In command zone`);
         updateMainActionButtons(); // Refresh the UI
         updateDisplay();
     },
     
-    // Status display customization
+    // Handle the toggle zone ability button
+    useToggleZoneAbility: function() {
+        this.toggleCommandZone();
+    },
     getStatusValue: function(index) {
+        const currentState = getCurrentCommanderState();
         switch(index) {
             case 0: return getTotalTokens(); // TOKENS
-            case 1: return getTotalUntapped(); // UNTAPPED
-            case 2: return getTotalTapped(); // TAPPED
+            case 1: return currentState ? (currentState.onBattlefield ? 1 : 0) : 0; // BATTLEFIELD
+            case 2: return getTotalUntapped(); // UNTAPPED
+            case 3: return getTotalTapped(); // TAPPED
             default: return 0;
         }
     }

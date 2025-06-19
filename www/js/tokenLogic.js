@@ -1,4 +1,4 @@
-// js/tokenLogic.js - Token calculations and multiplier logic
+// js/tokenLogic.js - Token calculations and multiplier logic with isolated commander states
 
 function applyTokenMultipliers(baseAmount) {
     if (baseAmount === 0) return 0;
@@ -59,7 +59,8 @@ function getTokenStats(tokenType) {
         'squirrel': { power: 1, toughness: 1 },
         'treasure': { power: 0, toughness: 0 }, // Artifacts
         'food': { power: 0, toughness: 0 }, // Artifacts
-        'generic': { power: 1, toughness: 1 }
+        'generic': { power: 1, toughness: 1 },
+        'goblin': { power: 1, toughness: 1 }
     };
     
     return tokenStats[tokenType] || { power: 1, toughness: 1 };
@@ -68,8 +69,9 @@ function getTokenStats(tokenType) {
 // Calculate total combat damage potential
 function calculateTotalCombatDamage() {
     let totalDamage = 0;
+    const tokenCounts = getTokenCounts();
     
-    Object.entries(gameState.tokenCounts).forEach(([tokenType, counts]) => {
+    Object.entries(tokenCounts).forEach(([tokenType, counts]) => {
         const tokenCount = counts.untapped + counts.tapped;
         if (tokenCount > 0) {
             const stats = getTokenStats(tokenType);
@@ -86,29 +88,31 @@ function calculateTotalCombatDamage() {
 
 function getCommanderPower() {
     const config = gameState.currentCommanderConfig;
-    if (!config) return 0;
+    const currentState = getCurrentCommanderState();
+    if (!config || !currentState) return 0;
     
     const baseStats = config.baseStats.split('/');
     const basePower = parseInt(baseStats[0]);
-    return basePower + gameState.commanderCounters;
+    return basePower + currentState.commanderCounters;
 }
 
 // Token interaction helpers
 function sacrificeTokensOfType(tokenType, amount) {
-    const available = gameState.tokenCounts[tokenType].untapped + gameState.tokenCounts[tokenType].tapped;
+    const tokenCounts = getTokenCounts();
+    const available = tokenCounts[tokenType].untapped + tokenCounts[tokenType].tapped;
     const toSacrifice = Math.min(amount, available);
     
     if (toSacrifice > 0) {
         let remaining = toSacrifice;
         
         // Remove from untapped first
-        const fromUntapped = Math.min(remaining, gameState.tokenCounts[tokenType].untapped);
-        gameState.tokenCounts[tokenType].untapped -= fromUntapped;
+        const fromUntapped = Math.min(remaining, tokenCounts[tokenType].untapped);
+        tokenCounts[tokenType].untapped -= fromUntapped;
         remaining -= fromUntapped;
         
         // Then from tapped if needed
         if (remaining > 0) {
-            gameState.tokenCounts[tokenType].tapped -= remaining;
+            tokenCounts[tokenType].tapped -= remaining;
         }
         
         updateDisplay();
@@ -119,7 +123,8 @@ function sacrificeTokensOfType(tokenType, amount) {
 
 function createTokensOfType(tokenType, amount) {
     const finalAmount = applyTokenMultipliers(amount);
-    gameState.tokenCounts[tokenType].untapped += finalAmount;
+    const tokenCounts = getTokenCounts();
+    tokenCounts[tokenType].untapped += finalAmount;
     
     // Check for commander-specific triggers
     const config = gameState.currentCommanderConfig;
@@ -150,19 +155,20 @@ function convertAllTokensToType(targetType) {
     if (totalTokens === 0) return 0;
     
     const untappedRatio = getTotalUntapped() / totalTokens;
+    const tokenCounts = getTokenCounts();
     
     // Clear all current tokens
-    Object.keys(gameState.tokenCounts).forEach(type => {
-        gameState.tokenCounts[type].untapped = 0;
-        gameState.tokenCounts[type].tapped = 0;
+    Object.keys(tokenCounts).forEach(type => {
+        tokenCounts[type].untapped = 0;
+        tokenCounts[type].tapped = 0;
     });
     
     // Convert to target type
     const newUntapped = Math.ceil(totalTokens * untappedRatio);
     const newTapped = totalTokens - newUntapped;
     
-    gameState.tokenCounts[targetType].untapped = newUntapped;
-    gameState.tokenCounts[targetType].tapped = newTapped;
+    tokenCounts[targetType].untapped = newUntapped;
+    tokenCounts[targetType].tapped = newTapped;
     
     updateDisplay();
     return totalTokens;
@@ -171,8 +177,9 @@ function convertAllTokensToType(targetType) {
 // Life gain calculations (for commanders like Trostani)
 function calculateLifeGainFromTokens() {
     let totalLifeGain = 0;
+    const tokenCounts = getTokenCounts();
     
-    Object.entries(gameState.tokenCounts).forEach(([tokenType, counts]) => {
+    Object.entries(tokenCounts).forEach(([tokenType, counts]) => {
         const tokenCount = counts.untapped + counts.tapped;
         if (tokenCount > 0) {
             const stats = getTokenStats(tokenType);
@@ -187,9 +194,10 @@ function calculateLifeGainFromTokens() {
 function populateLargestToken() {
     let largestType = null;
     let largestPowerToughness = 0;
+    const tokenCounts = getTokenCounts();
     
-    Object.keys(gameState.tokenCounts).forEach(tokenType => {
-        const count = gameState.tokenCounts[tokenType].untapped + gameState.tokenCounts[tokenType].tapped;
+    Object.keys(tokenCounts).forEach(tokenType => {
+        const count = tokenCounts[tokenType].untapped + tokenCounts[tokenType].tapped;
         if (count > 0) {
             const stats = getTokenStats(tokenType);
             const total = stats.power + stats.toughness;
@@ -202,7 +210,7 @@ function populateLargestToken() {
     
     if (largestType) {
         const finalTokens = applyTokenMultipliers(1);
-        gameState.tokenCounts[largestType].untapped += finalTokens;
+        tokenCounts[largestType].untapped += finalTokens;
         updateDisplay();
         return { type: largestType, amount: finalTokens };
     }
@@ -213,11 +221,12 @@ function populateLargestToken() {
 // Doubling effects
 function doubleAllTokens() {
     let totalDoubled = 0;
+    const tokenCounts = getTokenCounts();
     
-    Object.keys(gameState.tokenCounts).forEach(tokenType => {
-        const existing = gameState.tokenCounts[tokenType].untapped + gameState.tokenCounts[tokenType].tapped;
+    Object.keys(tokenCounts).forEach(tokenType => {
+        const existing = tokenCounts[tokenType].untapped + tokenCounts[tokenType].tapped;
         if (existing > 0) {
-            gameState.tokenCounts[tokenType].untapped += existing;
+            tokenCounts[tokenType].untapped += existing;
             totalDoubled += existing;
         }
     });

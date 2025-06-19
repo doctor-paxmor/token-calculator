@@ -1,4 +1,4 @@
-// commanders/krenko-mob.js
+// commanders/krenko-mob.js - Updated for isolated commander states
 window.CommanderConfigs = window.CommanderConfigs || {};
 window.CommanderConfigs['krenko-mob'] = {
     name: "Krenko, Mob Boss",
@@ -16,25 +16,30 @@ window.CommanderConfigs['krenko-mob'] = {
         { cost: 'T', name: "MOB BOSS", description: "TAP\nX GOBLINS" }
     ],
     
-    // Add goblin token type to game state if it doesn't exist
+    // Add goblin token type to current state if it doesn't exist
     initializeTokenType: function() {
-        if (!gameState.tokenCounts.goblin) {
-            gameState.tokenCounts.goblin = { untapped: 0, tapped: 0 };
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
+        
+        if (!currentState.tokenCounts.goblin) {
+            currentState.tokenCounts.goblin = { untapped: 0, tapped: 0 };
         }
-        if (gameState.goblinCreatures === undefined) {
-            gameState.goblinCreatures = 0; // Start with 0, player adds as needed
+        if (currentState.goblinCreatures === undefined) {
+            currentState.goblinCreatures = 0; // Start with 0, player adds as needed
         }
     },
     
     // Krenko-specific functions
     createGoblinToken: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
         
         // Create single 1/1 red Goblin token
         const baseTokens = 1;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
-        gameState.tokenCounts.goblin.untapped += finalTokens;
+        currentState.tokenCounts.goblin.untapped += finalTokens;
         
         if (finalTokens !== baseTokens) {
             addToHistory(`+${baseTokens} Goblin token → +${finalTokens} (modified)`);
@@ -46,21 +51,25 @@ window.CommanderConfigs['krenko-mob'] = {
     
     addGoblinCreature: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
         
         // Add a non-token Goblin creature to the battlefield
-        gameState.goblinCreatures += 1;
+        currentState.goblinCreatures += 1;
         
-        addToHistory(`+1 Goblin creature (${gameState.goblinCreatures} total Goblins)`);
+        addToHistory(`+1 Goblin creature (${currentState.goblinCreatures} total Goblins)`);
         updateDisplay();
     },
     
     removeGoblinCreature: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
         
         // Remove a non-token Goblin creature
-        if (gameState.goblinCreatures > 0) {
-            gameState.goblinCreatures -= 1;
-            addToHistory(`-1 Goblin creature (${gameState.goblinCreatures} Goblins remaining)`);
+        if (currentState.goblinCreatures > 0) {
+            currentState.goblinCreatures -= 1;
+            addToHistory(`-1 Goblin creature (${currentState.goblinCreatures} Goblins remaining)`);
         } else {
             addToHistory(`No Goblin creatures to remove`);
         }
@@ -70,15 +79,17 @@ window.CommanderConfigs['krenko-mob'] = {
     // Krenko's activated ability: {T}: Create X 1/1 red Goblin creature tokens, where X is the number of Goblins you control
     useKrenkoAbility: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
         
         // X = ALL Goblins you control (creatures + tokens + Krenko himself)
-        const goblinTokens = gameState.tokenCounts.goblin.untapped + gameState.tokenCounts.goblin.tapped;
-        const totalGoblinsControlled = gameState.goblinCreatures + goblinTokens + 1; // +1 for Krenko
+        const goblinTokens = currentState.tokenCounts.goblin.untapped + currentState.tokenCounts.goblin.tapped;
+        const totalGoblinsControlled = currentState.goblinCreatures + goblinTokens + 1; // +1 for Krenko
         
         const baseTokens = totalGoblinsControlled;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
-        gameState.tokenCounts.goblin.untapped += finalTokens;
+        currentState.tokenCounts.goblin.untapped += finalTokens;
         
         addToHistory(`Krenko: ${totalGoblinsControlled} Goblins controlled → +${finalTokens} new Goblin tokens`);
         updateDisplay();
@@ -87,9 +98,11 @@ window.CommanderConfigs['krenko-mob'] = {
     // Create multiple goblins at once (for other spells/effects)
     createMultipleGoblins: function(amount) {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return;
         
         const finalTokens = applyTokenMultipliers(amount);
-        gameState.tokenCounts.goblin.untapped += finalTokens;
+        currentState.tokenCounts.goblin.untapped += finalTokens;
         addToHistory(`+${finalTokens} 1/1 red Goblin tokens`);
         updateDisplay();
     },
@@ -97,9 +110,11 @@ window.CommanderConfigs['krenko-mob'] = {
     // Calculate total combat damage potential
     calculateCombatDamage: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return 0;
         
-        const goblinCount = gameState.tokenCounts.goblin.untapped + gameState.tokenCounts.goblin.tapped;
-        const krenkoPower = 3 + gameState.commanderCounters;
+        const goblinCount = currentState.tokenCounts.goblin.untapped + currentState.tokenCounts.goblin.tapped;
+        const krenkoPower = 3 + currentState.commanderCounters;
         
         // Goblins are 1/1, Krenko is 3/3 (plus counters)
         const goblinDamage = goblinCount * 1;
@@ -112,8 +127,10 @@ window.CommanderConfigs['krenko-mob'] = {
     // Quick reference for Krenko's ability potential
     checkKrenkoAbility: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return 0;
         
-        const currentGoblins = gameState.tokenCounts.goblin.untapped + gameState.tokenCounts.goblin.tapped + 1; // +1 for Krenko
+        const currentGoblins = currentState.tokenCounts.goblin.untapped + currentState.tokenCounts.goblin.tapped + 1; // +1 for Krenko
         const potentialTokens = applyTokenMultipliers(currentGoblins);
         
         addToHistory(`Krenko can create: ${potentialTokens} Goblins (${currentGoblins} current Goblins)`);
@@ -123,17 +140,22 @@ window.CommanderConfigs['krenko-mob'] = {
     // Goblin tribal synergy - count ALL Goblins (tokens + creatures)
     getTotalGoblins: function() {
         this.initializeTokenType();
-        const goblinTokens = gameState.tokenCounts.goblin.untapped + gameState.tokenCounts.goblin.tapped;
-        return goblinTokens + gameState.goblinCreatures;
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return 0;
+        
+        const goblinTokens = currentState.tokenCounts.goblin.untapped + currentState.tokenCounts.goblin.tapped;
+        return goblinTokens + currentState.goblinCreatures;
     },
     
     // Status display customization
     getStatusValue: function(index) {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return 0;
         
         switch(index) {
-            case 0: return gameState.goblinCreatures; // GOBLINS (manual creature counter)
-            case 1: return gameState.tokenCounts.goblin.untapped + gameState.tokenCounts.goblin.tapped; // GOBLIN TOKENS
+            case 0: return currentState.goblinCreatures; // GOBLINS (manual creature counter)
+            case 1: return currentState.tokenCounts.goblin.untapped + currentState.tokenCounts.goblin.tapped; // GOBLIN TOKENS
             case 2: return getTotalUntapped(); // UNTAPPED
             case 3: return getTotalTapped(); // TAPPED
             default: return 0;
@@ -143,9 +165,11 @@ window.CommanderConfigs['krenko-mob'] = {
     // Commander info display
     getCommanderDisplayInfo: function() {
         this.initializeTokenType();
+        const currentState = getCurrentCommanderState();
+        if (!currentState) return '';
         
-        const goblinCreatures = gameState.goblinCreatures;
-        const goblinTokens = gameState.tokenCounts.goblin.untapped + gameState.tokenCounts.goblin.tapped;
+        const goblinCreatures = currentState.goblinCreatures;
+        const goblinTokens = currentState.tokenCounts.goblin.untapped + currentState.tokenCounts.goblin.tapped;
         const totalControlled = goblinCreatures + goblinTokens + 1; // +1 for Krenko
         const potentialTokens = applyTokenMultipliers(totalControlled);
         
