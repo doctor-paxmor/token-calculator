@@ -8,7 +8,7 @@ window.CommanderConfigs.mahadi = {
     showCounters: false, // Don't show +1/+1 counters for Mahadi
     trackingLabels: ['TREASURES', 'DEATHS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
-        { text: 'CREATE TREASURE', action: 'createTreasureToken', class: 'primary-btn' },
+        { text: 'CREATURE DIED', action: 'addDeadCreature', class: 'primary-btn' },
         { text: 'END STEP TRIGGER', action: 'endStepTrigger', class: 'success-btn' }
     ],
     abilities: [
@@ -42,7 +42,7 @@ window.CommanderConfigs.mahadi = {
             
             gameState.tokenCounts.treasure.untapped += finalTokens;
             
-            addToHistory(`End step: ${this.creaturesDeadThisTurn} died → +${finalTokens} Treasures`);
+            addToHistory(`End step: ${this.creaturesDeadThisTurn} creatures died → +${finalTokens} Treasures`);
             
             // Reset death count for next turn
             this.creaturesDeadThisTurn = 0;
@@ -59,10 +59,10 @@ window.CommanderConfigs.mahadi = {
         updateDisplay();
     },
     
-    // Add to death count
+    // Add to death count - this is the main function for the "CREATURE DIED" button
     addDeadCreature: function() {
         this.creaturesDeadThisTurn += 1;
-        addToHistory(`+1 creature died (${this.creaturesDeadThisTurn} total this turn)`);
+        addToHistory(`Creature died (+1 death, ${this.creaturesDeadThisTurn} total this turn)`);
         updateDisplay();
     },
     
@@ -99,13 +99,8 @@ window.CommanderConfigs.mahadi = {
         }
     },
     
-    // Commander info display
+    // Commander info display - removed as requested
     getCommanderDisplayInfo: function() {
-        const treasureCount = gameState.tokenCounts.treasure.untapped + gameState.tokenCounts.treasure.tapped;
-        return `
-            <span>Mahadi: 3/3</span>
-            <span>Deaths: ${this.creaturesDeadThisTurn}</span>
-            <span>Mana: ${treasureCount}</span>
-        `;
+        return null; // Don't display extra commander info
     }
 };
