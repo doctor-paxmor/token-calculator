@@ -1,4 +1,49 @@
-/* css/styles.css - Complete app styling */
+/* css/styles.css - Complete app styling with MTG-inspired 2025 palette */
+
+:root {
+    /* Refined Neutral Color System */
+    --bg-primary: #0d0d0f;
+    --bg-secondary: #161618;
+    --bg-tertiary: #1f1f23;
+    --bg-card: #252529;
+    
+    /* Text Colors */
+    --text-primary: #f0f0f2;
+    --text-secondary: #c4c4c7;
+    --text-muted: #8b8b8f;
+    --text-dim: #606066;
+    
+    /* Muted Functional Colors */
+    --blue-muted: #4a6ba7;
+    --blue-active: #5a7bb7;
+    --blue-hover: #6a8bc7;
+    
+    --green-muted: #4a7c59;
+    --green-active: #5a8c69;
+    --green-hover: #6a9c79;
+    
+    --red-muted: #8b4a5c;
+    --red-active: #9b5a6c;
+    --red-hover: #ab6a7c;
+    
+    --orange-muted: #a67c4a;
+    --orange-active: #b68c5a;
+    --orange-hover: #c69c6a;
+    
+    --purple-muted: #7a6ba7;
+    --purple-active: #8a7bb7;
+    --purple-hover: #9a8bc7;
+    
+    /* Neutral Borders & Accents */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-muted: rgba(255, 255, 255, 0.12);
+    --border-strong: rgba(255, 255, 255, 0.18);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
 
 * {
     margin: 0;
@@ -9,8 +54,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-    background: #000000;
-    color: #ffffff;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     height: 100vh;
     overflow: hidden;
     display: flex;
@@ -23,15 +68,15 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    background: #000;
+    background: var(--bg-primary);
 }
 
 /* Calculator Display - Fixed Height */
 .calculator-display {
-    background: #000;
+    background: var(--bg-primary);
     height: 100px;
     padding: 16px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-muted);
     display: flex;
     flex-direction: column;
     position: relative;
@@ -45,7 +90,7 @@ body {
     height: 70px;
     overflow-y: auto;
     font-size: 11px;
-    color: #555;
+    color: var(--text-dim);
     line-height: 1.2;
     font-family: monospace;
 }
@@ -55,7 +100,7 @@ body {
 }
 
 .history-corner::-webkit-scrollbar-thumb { 
-    background: #333; 
+    background: var(--border-muted); 
 }
 
 .main-number {
@@ -67,11 +112,12 @@ body {
     font-weight: 300;
     font-family: monospace;
     padding-right: 16px;
+    color: var(--text-primary);
 }
 
 .sub-line {
     font-size: 12px;
-    color: #888;
+    color: var(--text-muted);
     text-align: right;
     padding-right: 110px;
     font-family: monospace;
@@ -83,21 +129,22 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1px;
-    background: #222;
+    background: var(--border-muted);
     padding: 0;
 }
 
 .status-cell {
-    background: #1a1a1a;
+    background: var(--bg-secondary);
     padding: 8px 4px;
     text-align: center;
 }
 
 .status-label {
     font-size: 9px;
-    color: #888;
+    color: var(--text-muted);
     margin-bottom: 2px;
     font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .status-number {
@@ -106,10 +153,11 @@ body {
     font-family: monospace;
 }
 
-.hares-color { color: #FF9800; }
-.total-color { color: #2196F3; }
-.ready-color { color: #4CAF50; }
-.used-color { color: #f44336; }
+/* Status colors - more muted and functional */
+.hares-color { color: var(--orange-muted); }
+.total-color { color: var(--blue-muted); }
+.ready-color { color: var(--green-muted); }
+.used-color { color: var(--red-muted); }
 
 /* Button Grid */
 .button-area {
@@ -118,16 +166,14 @@ body {
     flex-direction: column;
     gap: 8px;
     padding: 12px;
-    background: #111;
+    background: var(--bg-secondary);
+    position: relative;
+    z-index: 10;
 }
 
-.button-group {
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    padding: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
-}
+/* Calculator-Inspired Improvements */
 
+/* More precise button grid spacing */
 .button-row {
     display: grid;
     gap: 6px;
@@ -142,111 +188,224 @@ body {
 .row-3 { grid-template-columns: 1fr 1fr 1fr; }
 .row-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
 
+/* Enhanced main display - more calculator-like */
+.main-number {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    font-size: 36px;
+    font-weight: 300;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    padding-right: 20px;
+    color: var(--text-primary);
+    letter-spacing: -1px;
+}
+
+/* Calculator-style status display */
+.status-number {
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    letter-spacing: -0.5px;
+}
+
+/* More geometric button groups */
+.button-group {
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid var(--border-subtle);
+    backdrop-filter: blur(10px);
+}
+
+/* Calculator-style section headers */
+.button-group > div[style*="font-size: 10px"] {
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: inherit;
+}
+
 .btn {
-    background: #2d2d2d;
-    border: 1px solid #404040;
+    background: var(--bg-card);
+    border: 1px solid var(--border-muted);
     border-radius: 6px;
-    color: #fff;
+    color: var(--text-primary);
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 12px 8px;
     text-align: center;
     line-height: 1.2;
     font-family: inherit;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
+.btn:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-tertiary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Calculator-style button press */
 .btn:active {
-    transform: scale(0.95);
-    background: #404040;
+    transform: translateY(1px);
+    background: var(--bg-secondary);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    border-color: var(--border-subtle);
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 107, 167, 0.3);
 }
 
 .btn:disabled {
-    background: #1a1a1a;
-    color: #666;
+    background: var(--bg-tertiary);
+    color: var(--text-dim);
     cursor: not-allowed;
-    border-color: #333;
+    border-color: var(--border-subtle);
+    box-shadow: none;
 }
 
+.btn:disabled:hover,
 .btn:disabled:active {
     transform: none;
+    box-shadow: none;
+    background: var(--bg-tertiary);
 }
 
-/* Button Variants */
+/* Button Variants - Muted and Functional */
 .toggle-btn {
-    background: #1a1a1a;
-    border-color: #333;
+    background: var(--bg-tertiary);
+    border-color: var(--border-subtle);
+    color: var(--text-secondary);
 }
 
 .toggle-btn.active {
-    background: #4CAF50;
-    border-color: #4CAF50;
-    color: #000;
+    background: var(--green-muted);
+    border-color: var(--green-muted);
+    color: var(--text-primary);
     font-weight: 600;
 }
 
+.toggle-btn.active:hover {
+    background: var(--green-active);
+    border-color: var(--green-active);
+}
+
 .primary-btn {
-    background: #0078d4;
-    border-color: #0078d4;
+    background: var(--blue-muted);
+    border-color: var(--blue-muted);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.primary-btn:hover {
+    background: var(--blue-active);
+    border-color: var(--blue-active);
 }
 
 .primary-btn:active {
-    background: #106ebe;
-}
-
-.danger-btn {
-    background: #d83b01;
-    border-color: #d83b01;
-}
-
-.danger-btn:active {
-    background: #a80000;
+    background: var(--blue-muted);
+    border-color: var(--blue-muted);
 }
 
 .success-btn {
-    background: #107c10;
-    border-color: #107c10;
+    background: var(--green-muted);
+    border-color: var(--green-muted);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.success-btn:hover {
+    background: var(--green-active);
+    border-color: var(--green-active);
 }
 
 .success-btn:active {
-    background: #0e6b0e;
+    background: var(--green-muted);
+    border-color: var(--green-muted);
+}
+
+.danger-btn {
+    background: var(--red-muted);
+    border-color: var(--red-muted);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.danger-btn:hover {
+    background: var(--red-active);
+    border-color: var(--red-active);
+}
+
+.danger-btn:active {
+    background: var(--red-muted);
+    border-color: var(--red-muted);
 }
 
 .warning-btn {
-    background: #ff8c00;
-    border-color: #ff8c00;
+    background: var(--orange-muted);
+    border-color: var(--orange-muted);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.warning-btn:hover {
+    background: var(--orange-active);
+    border-color: var(--orange-active);
 }
 
 .warning-btn:active {
-    background: #e67e00;
+    background: var(--orange-muted);
+    border-color: var(--orange-muted);
 }
 
 .purple-btn {
-    background: #8764b8;
-    border-color: #8764b8;
+    background: var(--purple-muted);
+    border-color: var(--purple-muted);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.purple-btn:hover {
+    background: var(--purple-active);
+    border-color: var(--purple-active);
 }
 
 .purple-btn:active {
-    background: #744da9;
+    background: var(--purple-muted);
+    border-color: var(--purple-muted);
 }
 
 .commander-info {
-    background: #1a1a1a;
-    border-radius: 6px;
-    padding: 8px;
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 12px;
     text-align: center;
     font-size: 11px;
-    color: #ccc;
-    border: 1px solid #333;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
     display: flex;
     justify-content: space-between;
+    box-shadow: var(--shadow-sm);
 }
 
 /* Custom Dark Dropdown - No More White Flashbang! */
 .commander-select-container {
     margin-top: 12px;
     position: relative;
+    z-index: 50000;
 }
 
 .commander-select-label {
@@ -261,6 +420,7 @@ body {
 .custom-select {
     position: relative;
     width: 100%;
+    z-index: 50000;
 }
 
 .custom-select-trigger {
@@ -433,17 +593,17 @@ body {
 }
 
 .custom-select-dropdown::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--border-subtle);
     border-radius: 3px;
 }
 
 .custom-select-dropdown::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--border-muted);
     border-radius: 3px;
 }
 
 .custom-select-dropdown::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: var(--border-strong);
 }
 
 /* Dropdown backdrop for mobile */
@@ -453,12 +613,12 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 999;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 49999;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(3px);
 }
 
 @media (max-width: 768px) {
@@ -480,8 +640,9 @@ body {
     overflow: hidden;
     border-radius: 0;
     margin: 0;
-    background: #000;
+    background: var(--bg-primary);
     position: relative;
+    z-index: 1;
 }
 
 #commanderArt {
@@ -490,19 +651,20 @@ body {
     object-fit: cover;
     object-position: center;
     border-radius: 0;
-    opacity: 0.5;
+    opacity: 0.4;
     display: none;
+    filter: contrast(1.1) brightness(0.9);
 }
 
-/* Gradient overlay to fade top into black background */
+/* Enhanced gradient overlay */
 .commander-art::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 1%;
-    background: linear-gradient(to bottom, #000000 0%, rgba(0,0,0,0.7) 15%, transparent 100%);
+    height: 15%;
+    background: linear-gradient(to bottom, var(--bg-primary) 0%, rgba(13,13,15,0.8) 40%, transparent 100%);
     pointer-events: none;
     z-index: 1;
 }
@@ -524,54 +686,57 @@ body {
 }
 
 .dismiss-btn {
-    background: rgba(0,0,0,0.7);
-    border: 1px solid #666;
-    color: #fff;
-    padding: 4px 8px;
+    background: rgba(0,0,0,0.8);
+    border: 1px solid var(--border-muted);
+    color: var(--text-primary);
+    padding: 6px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
 }
 
-.dismiss-btn:active {
+.dismiss-btn:hover {
     background: rgba(0,0,0,0.9);
+    border-color: var(--border-strong);
 }
 
 /* Loading states */
 .loading {
-    opacity: 0.5;
+    opacity: 0.6;
     pointer-events: none;
 }
 
 .loading::after {
     content: "...";
-    animation: loading 1s infinite;
+    animation: loading 1.5s infinite;
 }
 
 @keyframes loading {
     0%, 20% { opacity: 1; }
-    50% { opacity: 0.5; }
+    50% { opacity: 0.4; }
     100% { opacity: 1; }
 }
 
 /* Mobile responsiveness */
 .mobile .btn {
-    padding: 8px 4px;
-    font-size: 10px;
+    padding: 10px 6px;
+    font-size: 11px;
 }
 
 .mobile .calculator-display {
-    height: 80px;
-    padding: 8px;
+    height: 85px;
+    padding: 10px;
 }
 
 .mobile .main-number {
-    font-size: 24px;
+    font-size: 28px;
 }
 
 .mobile .status-number {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 /* Responsive breakpoints */
@@ -642,50 +807,55 @@ body {
 
 /* Animation utilities */
 .fade-in {
-    animation: fadeIn 0.3s ease-in;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .scale-up {
-    animation: scaleUp 0.2s ease-out;
+    animation: scaleUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleUp {
-    from { transform: scale(0.95); }
-    to { transform: scale(1); }
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
 }
 
 /* Focus states for accessibility */
 .btn:focus {
-    outline: 2px solid #0078d4;
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 107, 167, 0.3);
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
+    :root {
+        --border-subtle: rgba(255, 255, 255, 0.15);
+        --border-muted: rgba(255, 255, 255, 0.25);
+        --border-strong: rgba(255, 255, 255, 0.35);
+    }
+    
     .btn {
         border-width: 2px;
     }
     
     .status-cell {
-        border: 1px solid #666;
+        border: 1px solid var(--border-muted);
     }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-    .btn {
-        transition: none;
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
     
-    .loading::after {
-        animation: none;
-    }
-    
+    .btn,
     .custom-select-trigger,
     .custom-select-dropdown,
     .custom-select-arrow {
@@ -693,6 +863,8 @@ body {
         transform: none;
     }
     
+    .btn:hover,
+    .btn:active,
     .custom-select-trigger:hover,
     .custom-select-trigger:focus {
         transform: none;
@@ -702,12 +874,34 @@ body {
 /* Dark theme enhancements */
 @media (prefers-color-scheme: dark) {
     body {
-        background: #000000;
-        color: #ffffff;
+        background: var(--bg-primary);
+        color: var(--text-primary);
     }
+}
+
+/* Enhanced focus indicators for better accessibility */
+.custom-select-trigger:focus-visible {
+    border-color: var(--blue-muted);
+    box-shadow: 
+        var(--shadow-md),
+        0 0 0 3px rgba(74, 107, 167, 0.25);
+}
+
+.custom-select-option:focus {
+    background: rgba(74, 107, 167, 0.15);
+    outline: none;
 }
 
 /* Add CSS rule for hiding commander info */
 .commander-info.hidden {
     display: none !important;
+}
+
+/* Typography improvements */
+.commander-select-label {
+    font-feature-settings: "tnum" 1, "kern" 1;
+}
+
+.status-number, .main-number {
+    font-feature-settings: "tnum" 1;
 }
