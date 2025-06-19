@@ -517,3 +517,64 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// Haptic feedback settings
+let hapticEnabled = localStorage.getItem('hapticEnabled') !== 'false'; // Default on
+let lastHapticTime = 0;
+
+function toggleHapticFeedback() {
+    hapticEnabled = !hapticEnabled;
+    localStorage.setItem('hapticEnabled', hapticEnabled);
+    
+    const toggle = document.getElementById('hapticToggle');
+    if (toggle) {
+        toggle.classList.toggle('active', hapticEnabled);
+        toggle.textContent = hapticEnabled ? 'HAPTIC\nON' : 'HAPTIC\nOFF';
+    }
+    
+    addToHistory(`Haptic feedback ${hapticEnabled ? 'ON' : 'OFF'}`);
+}
+
+// Haptic feedback for all buttons and dropdown - wait for device ready
+document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('click', (e) => {
+        let shouldVibrate = false;
+        
+        // Check for standard elements
+        if (e.target.matches('.btn') || 
+            e.target.matches('.custom-select-trigger') || 
+            e.target.matches('.custom-select-option')) {
+            shouldVibrate = true;
+        }
+        
+        // Special check for Adrix toggle slider (check if clicked element or its parent has the toggle function)
+        if (e.target.onclick && e.target.onclick.toString().includes('toggleCommandZone')) {
+            shouldVibrate = true;
+        }
+        if (e.target.parentElement && e.target.parentElement.onclick && 
+            e.target.parentElement.onclick.toString().includes('toggleCommandZone')) {
+            shouldVibrate = true;
+        }
+        
+        // Fallback: any click in mainActionRow
+        if (e.target.closest('#mainActionRow')) {
+            shouldVibrate = true;
+        }
+        
+        if (shouldVibrate) {
+            // Only trigger haptic if enabled and enough time has passed (throttle)
+            const now = Date.now();
+            if (hapticEnabled && (now - lastHapticTime > 50)) {
+                lastHapticTime = now;
+                try {
+                    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics) {
+                        // Try the weakest vibration with shortest duration
+                        window.Capacitor.Plugins.Haptics.vibrate({ duration: 10 });
+                    }
+                } catch (error) {
+                    // Silently fail if haptics not available
+                }
+            }
+        }
+    });
+});

@@ -14,7 +14,7 @@ window.CommanderConfigs.adrix = {
     abilities: [],
     
     // Track if Adrix and Nev are on the battlefield
-    onBattlefield: true,
+    onBattlefield: false,
     
     // CREATE TOKEN function
     createGenericToken: function() {
