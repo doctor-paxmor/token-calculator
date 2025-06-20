@@ -168,7 +168,7 @@ body {
     padding: 12px;
     background: var(--bg-secondary);
     position: relative;
-    z-index: 10;
+    z-index: 10; /* Lower than backdrop so it gets blurred */
 }
 
 /* Calculator-Inspired Improvements */
@@ -405,7 +405,7 @@ body {
 .commander-select-container {
     margin-top: 12px;
     position: relative;
-    z-index: 50000;
+    z-index: 100000; /* Higher than backdrop to ensure dropdown appears above blur */
 }
 
 .commander-select-label {
@@ -420,7 +420,7 @@ body {
 .custom-select {
     position: relative;
     width: 100%;
-    z-index: 50000;
+    z-index: 100000;
 }
 
 .custom-select-trigger {
@@ -606,19 +606,18 @@ body {
     background: var(--border-strong);
 }
 
-/* Dropdown backdrop for mobile */
+/* Dropdown backdrop for mobile - No visual effects */
 .dropdown-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 49999;
+    background: transparent; /* No overlay at all */
+    z-index: 50000;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s ease;
-    backdrop-filter: blur(3px);
 }
 
 @media (max-width: 768px) {
