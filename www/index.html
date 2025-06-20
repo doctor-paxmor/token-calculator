@@ -53,12 +53,15 @@
                         Anointed<br>Procession
                     </button>
                 </div>
-                <div class="button-row row-3">
+                <div class="button-row row-4">
                     <button class="btn toggle-btn" id="primalToggle" onclick="toggleModifier('primalVigor')">
                         Primal<br>Vigor
                     </button>
-                    <button class="btn toggle-btn" id="adrixToggle" onclick="toggleModifier('adrixNev')">
-                        Adrix &<br>Nev
+                    <button class="btn toggle-btn" id="plusOneToggle" onclick="adjustManualMultiplier(1)">
+                        +1x
+                    </button>
+                    <button class="btn toggle-btn" id="minusOneToggle" onclick="adjustManualMultiplier(-1)">
+                        -1x
                     </button>
                     <button class="btn toggle-btn" id="ojerToggle" onclick="toggleModifier('ojerTaq')">
                         Ojer<br>Taq
@@ -160,8 +163,8 @@
     <input type="checkbox" id="mondrak" style="display: none;">
     <input type="checkbox" id="anointedProcession" style="display: none;">
     <input type="checkbox" id="primalVigor" style="display: none;">
-    <input type="checkbox" id="adrixNev" style="display: none;">
     <input type="checkbox" id="ojerTaq" style="display: none;">
+    <input type="number" id="manualMultiplier" value="0" style="display: none;">
 
     <!-- Load Scripts -->
     <script src="js/core.js"></script>

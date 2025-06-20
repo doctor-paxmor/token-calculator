@@ -44,7 +44,8 @@ function getCurrentCommanderState() {
             commanderHasTrample: false,
             goblinCreatures: 0, // For Krenko
             modifierStates: {},
-            // Commander-specific data for Adrix
+            manualMultiplier: 0, // For manual +1x/-1x
+            // Commander-specific data for Adrix (removed but keeping for compatibility)
             onBattlefield: false,
             // Commander-specific data for Mahadi
             creaturesDeadThisTurn: 0
@@ -78,13 +79,19 @@ function saveGameState() {
         // Also save modifier states for current commander
         const currentState = getCurrentCommanderState();
         if (currentState) {
-            const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
+            const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'ojerTaq'];
             modifierIds.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
                     currentState.modifierStates[id] = element.checked;
                 }
             });
+            
+            // Save manual multiplier state
+            const manualMultiplier = document.getElementById('manualMultiplier');
+            if (manualMultiplier) {
+                currentState.manualMultiplier = parseInt(manualMultiplier.value) || 0;
+            }
         }
         
         localStorage.setItem('mtg_calculator_state', JSON.stringify(stateToSave));
@@ -138,8 +145,8 @@ function applyModifierStates() {
     const currentState = getCurrentCommanderState();
     if (!currentState || !currentState.modifierStates) return;
     
-    const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
-    const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'adrixToggle', 'ojerToggle'];
+    const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'ojerTaq'];
+    const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'ojerToggle'];
     
     modifierIds.forEach((id, index) => {
         const element = document.getElementById(id);
@@ -153,6 +160,15 @@ function applyModifierStates() {
             }
         }
     });
+    
+    // Restore manual multiplier state
+    if (currentState.manualMultiplier !== undefined) {
+        const manualMultiplier = document.getElementById('manualMultiplier');
+        if (manualMultiplier) {
+            manualMultiplier.value = currentState.manualMultiplier;
+            updateManualMultiplierDisplay();
+        }
+    }
 }
 
 // Track when user has meaningful data that would be lost
@@ -162,8 +178,9 @@ function updateUnsavedDataStatus() {
     const currentState = getCurrentCommanderState();
     const hasCounters = currentState ? currentState.commanderCounters > 0 : false;
     const hasHistory = gameState.history.length > 1; // More than just commander selection
+    const hasManualMultiplier = currentState ? currentState.manualMultiplier !== 0 : false;
     
-    hasUnsavedData = totalTokens > 0 || hasModifiers || hasCounters || hasHistory;
+    hasUnsavedData = totalTokens > 0 || hasModifiers || hasCounters || hasHistory || hasManualMultiplier;
     
     // Auto-save when there's data to preserve
     if (hasUnsavedData) {
@@ -478,11 +495,14 @@ async function applyCommanderConfig() {
     getCurrentCommanderState();
 
     // Clear modifier toggles before applying new commander's states
-    const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
-    const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'adrixToggle', 'ojerToggle'];
+    const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'ojerTaq'];
+    const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'ojerToggle'];
     
     modifierIds.forEach(id => document.getElementById(id).checked = false);
     toggleIds.forEach(id => document.getElementById(id).classList.remove('active'));
+
+    // Reset manual multiplier
+    document.getElementById('manualMultiplier').value = 0;
 
     // Update UI elements
     updateMainActionButtons();
@@ -506,13 +526,19 @@ async function changeCommander() {
         // Save current commander's modifier states before switching
         const currentState = getCurrentCommanderState();
         if (currentState) {
-            const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
+            const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'ojerTaq'];
             modifierIds.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
                     currentState.modifierStates[id] = element.checked;
                 }
             });
+            
+            // Save manual multiplier
+            const manualMultiplier = document.getElementById('manualMultiplier');
+            if (manualMultiplier) {
+                currentState.manualMultiplier = parseInt(manualMultiplier.value) || 0;
+            }
         }
 
         // Switch to new commander
@@ -581,15 +607,6 @@ function addTokensDirect(amount) {
     }
     updateDisplay();
     updateUnsavedDataStatus();
-
-    // Auto-initialize Adrix toggle on load
-    if (config.name === "Adrix and Nev, Twincasters") {
-        setTimeout(() => {
-            if (typeof config.updateToggleDisplay === 'function') {
-                config.updateToggleDisplay();
-            }
-        }, 100);
-    }
 }
 
 function removeTokens(amount) {
@@ -720,17 +737,22 @@ function resetBattlefield() {
             commanderHasTrample: false,
             goblinCreatures: 0,
             modifierStates: {},
+            manualMultiplier: 0,
             onBattlefield: false,
             creaturesDeadThisTurn: 0
         };
     }
 
     // Reset modifier toggles
-    const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'adrixNev', 'ojerTaq'];
-    const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'adrixToggle', 'ojerToggle'];
+    const modifierIds = ['doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession', 'primalVigor', 'ojerTaq'];
+    const toggleIds = ['doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle', 'primalToggle', 'ojerToggle'];
 
     modifierIds.forEach(id => document.getElementById(id).checked = false);
     toggleIds.forEach(id => document.getElementById(id).classList.remove('active'));
+
+    // Reset manual multiplier
+    document.getElementById('manualMultiplier').value = 0;
+    updateManualMultiplierDisplay();
 
     // Reset only current commander's history
     gameState.history = [];
@@ -962,6 +984,7 @@ function updateDisplay() {
     updateAbilityButtons();
     updateCommanderInfo();
     updateCommanderArt();
+    updateManualMultiplierDisplay();
 }
 
 function updateMainDisplay() {
@@ -1034,11 +1057,11 @@ function updateStatusDisplay() {
 function updateModifierToggles() {
     const toggles = [
         'doublingToggle', 'parallelToggle', 'mondrakToggle', 'anointedToggle',
-        'primalToggle', 'adrixToggle', 'ojerToggle'
+        'primalToggle', 'ojerToggle'
     ];
     const checkboxes = [
         'doublingSeasons', 'parallelLives', 'mondrak', 'anointedProcession',
-        'primalVigor', 'adrixNev', 'ojerTaq'
+        'primalVigor', 'ojerTaq'
     ];
     
     toggles.forEach((toggleId, index) => {

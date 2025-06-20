@@ -1,4 +1,4 @@
-// js/tokenLogic.js - Token calculations and multiplier logic with isolated commander states
+// js/tokenLogic.js - Token calculations and multiplier logic with manual multiplier
 
 function applyTokenMultipliers(baseAmount) {
     if (baseAmount === 0) return 0;
@@ -9,7 +9,6 @@ function applyTokenMultipliers(baseAmount) {
     if (document.getElementById('doublingSeasons').checked) multiplier *= 2;
     if (document.getElementById('mondrak').checked) multiplier *= 2;
     if (document.getElementById('primalVigor').checked) multiplier *= 2;
-    if (document.getElementById('adrixNev').checked) multiplier *= 2; // Simplified - first time per turn
     
     // Effects that double CREATURE tokens (most tokens are creatures)
     if (document.getElementById('parallelLives').checked) multiplier *= 2;
@@ -18,7 +17,57 @@ function applyTokenMultipliers(baseAmount) {
     // Ojer Taq triples instead of doubles
     if (document.getElementById('ojerTaq').checked) multiplier *= 3;
     
+    // Manual multiplier adjustment
+    const manualMultiplier = parseInt(document.getElementById('manualMultiplier').value) || 0;
+    multiplier += manualMultiplier;
+    
+    // Ensure multiplier doesn't go below 0
+    multiplier = Math.max(0, multiplier);
+    
     return baseAmount * multiplier;
+}
+
+function adjustManualMultiplier(amount) {
+    const manualInput = document.getElementById('manualMultiplier');
+    const currentValue = parseInt(manualInput.value) || 0;
+    const newValue = currentValue + amount;
+    
+    // Don't allow manual multiplier to go below 0
+    if (newValue < 0) {
+        addToHistory(`Manual multiplier already at 0`);
+        return;
+    }
+    
+    manualInput.value = newValue;
+    
+    // Update display to show new multiplier status
+    updateDisplay();
+    updateManualMultiplierDisplay();
+    
+    // Add to history
+    const action = amount > 0 ? `+${amount}x` : `${amount}x`;
+    addToHistory(`Manual multiplier ${action} (total: ${newValue}x)`);
+}
+
+function updateManualMultiplierDisplay() {
+    const manualValue = parseInt(document.getElementById('manualMultiplier').value) || 0;
+    const plusBtn = document.getElementById('plusOneToggle');
+    const minusBtn = document.getElementById('minusOneToggle');
+    
+    if (plusBtn && minusBtn) {
+        // Update button text to show current multiplier
+        if (manualValue === 0) {
+            plusBtn.innerHTML = '+1x';
+            minusBtn.innerHTML = '-1x';
+            plusBtn.classList.remove('active');
+            minusBtn.classList.remove('active');
+        } else {
+            plusBtn.innerHTML = `+1x<br>(${manualValue}x)`;
+            minusBtn.innerHTML = `-1x<br>(${manualValue}x)`;
+            plusBtn.classList.add('active');
+            minusBtn.classList.add('active');
+        }
+    }
 }
 
 function toggleModifier(id) {
@@ -35,7 +84,6 @@ function toggleModifier(id) {
         'mondrak': 'Mondrak',
         'anointedProcession': 'Anointed Procession',
         'primalVigor': 'Primal Vigor',
-        'adrixNev': 'Adrix & Nev',
         'ojerTaq': 'Ojer Taq'
     };
     

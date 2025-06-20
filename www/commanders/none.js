@@ -6,7 +6,7 @@ window.CommanderConfigs.none = {
     primaryTokens: ['generic'],
     artPath: "assets/art/icon.jpg",
     showCommanderInfo: false, // Don't show commander info section
-    trackingLabels: ['TOKENS', 'POWER', 'UNTAPPED', 'TAPPED'],
+    trackingLabels: ['TOKENS', 'UNTAPPED', 'TAPPED'],
     mainActions: [
         { text: 'CREATE TOKEN', action: 'createGenericToken', class: 'primary-btn' }
     ],
@@ -19,7 +19,7 @@ window.CommanderConfigs.none = {
         const currentState = getCurrentCommanderState();
         if (!currentState) return;
         
-        // Create single 1/1 token
+        // Create single token
         const baseTokens = 1;
         const finalTokens = applyTokenMultipliers(baseTokens);
         
@@ -28,7 +28,7 @@ window.CommanderConfigs.none = {
         if (finalTokens !== baseTokens) {
             addToHistory(`+${baseTokens} Token → +${finalTokens} (modified)`);
         } else {
-            addToHistory(`+${finalTokens} 1/1 Token`);
+            addToHistory(`+${finalTokens} Token`);
         }
         updateDisplay();
     },
@@ -40,9 +40,8 @@ window.CommanderConfigs.none = {
         
         switch(index) {
             case 0: return getTotalTokens(); // TOKENS
-            case 1: return getTotalTokens(); // POWER (assuming 1/1 tokens)
-            case 2: return getTotalUntapped(); // UNTAPPED
-            case 3: return getTotalTapped(); // TAPPED
+            case 1: return getTotalUntapped(); // UNTAPPED
+            case 2: return getTotalTapped(); // TAPPED
             default: return 0;
         }
     }
