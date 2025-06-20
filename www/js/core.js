@@ -404,7 +404,7 @@ let availableCommanders = [];
 // Load available commanders from the commanders/ folder
 async function loadAvailableCommanders() {
     const commanderList = [
-        'adrix', 'baylen',
+        'none', 'adrix', 'baylen',
         'chatterfang', 'jinnie', 'krenko-mob', 'mahadi', 'rinseri'
     ];
 

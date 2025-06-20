@@ -484,7 +484,7 @@ async function initializeAds() {
         if (AdMob) {
             console.log('AdMob found, initializing...');
             await AdMob.initialize({
-                initializeForTesting: true
+                initializeForTesting: false
             });
             await loadBannerAd();
         } else {
@@ -499,6 +499,7 @@ async function loadBannerAd() {
     try {
         const { AdMob } = window.Capacitor.Plugins;
         await AdMob.showBanner({
+            adId: 'ca-app-pub-2559138273229237/6017755575',
             position: 'BOTTOM_CENTER',
             size: 'BANNER'
         });

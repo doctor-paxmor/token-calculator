@@ -39,3 +39,6 @@ capacitor.config.json
 
 # Package lock (optional - some prefer to exclude this)
 package-lock.json
+
+# UI file with private ad unit IDs
+www/js/ui.js
