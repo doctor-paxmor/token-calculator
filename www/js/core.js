@@ -66,6 +66,96 @@ let hasUnsavedData = false;
 let closeWarningEnabled = true;
 let isAppInitialized = false;
 
+// Rating modal tracking
+function trackAppOpen() {
+    try {
+        let appOpenCount = parseInt(localStorage.getItem('mtg_app_open_count') || '0');
+        const hasRated = localStorage.getItem('mtg_has_rated') === 'true';
+        
+        // Increment open count
+        appOpenCount++;
+        localStorage.setItem('mtg_app_open_count', appOpenCount.toString());
+        
+        console.log(`App opened ${appOpenCount} times, hasRated: ${hasRated}`);
+        
+        // Show rating modal on 3rd open if user hasn't rated
+        if (appOpenCount === 3 && !hasRated) {
+            // Delay showing modal to let app load
+            setTimeout(showRatingModal, 2000);
+        }
+    } catch (error) {
+        console.error('Failed to track app open:', error);
+    }
+}
+
+function showRatingModal() {
+    const overlay = document.getElementById('ratingModalOverlay');
+    if (overlay) {
+        overlay.classList.add('show');
+        console.log('Rating modal shown');
+    }
+}
+
+function dismissRatingModal() {
+    const overlay = document.getElementById('ratingModalOverlay');
+    if (overlay) {
+        overlay.classList.remove('show');
+    }
+    
+    // Reset counter for next time
+    localStorage.setItem('mtg_app_open_count', '0');
+    console.log('Rating modal dismissed, counter reset');
+}
+
+function openPlayStore() {
+    const packageName = 'com.github.doctorpaxmor.tokencalculator';
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=${packageName}`;
+    
+    try {
+        // Try to use Capacitor's App plugin to open store
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            window.Capacitor.Plugins.App.openUrl({ url: playStoreUrl });
+        } else {
+            // Fallback to window.open
+            window.open(playStoreUrl, '_system');
+        }
+        
+        // Mark as rated so we don't show again
+        localStorage.setItem('mtg_has_rated', 'true');
+        dismissRatingModal();
+        
+        console.log('Opened Play Store');
+    } catch (error) {
+        console.error('Failed to open Play Store:', error);
+        // Fallback
+        window.open(playStoreUrl, '_blank');
+        localStorage.setItem('mtg_has_rated', 'true');
+        dismissRatingModal();
+    }
+}
+
+function openKofi() {
+    const kofiUrl = 'https://ko-fi.com/doctorpaxmor';
+    
+    try {
+        // Try to use Capacitor's App plugin to open URL
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            window.Capacitor.Plugins.App.openUrl({ url: kofiUrl });
+        } else {
+            // Fallback to window.open
+            window.open(kofiUrl, '_system');
+        }
+        
+        dismissRatingModal();
+        console.log('Opened Ko-fi');
+    } catch (error) {
+        console.error('Failed to open Ko-fi:', error);
+        // Fallback
+        window.open(kofiUrl, '_blank');
+        dismissRatingModal();
+    }
+}
+
 // State persistence functions
 function saveGameState() {
     try {
@@ -766,6 +856,9 @@ function resetBattlefield() {
 async function initializeApp() {
     // Initialize close warning system
     initializeCloseWarning();
+    
+    // Track app open for rating modal
+    trackAppOpen();
     
     // Lock to portrait orientation
     try {

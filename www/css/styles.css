@@ -724,6 +724,143 @@ body::before {
     border-color: var(--border-strong);
 }
 
+/* Rating Modal Styles */
+.rating-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rating-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.rating-modal {
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    max-width: 340px;
+    width: 90%;
+    margin: 20px;
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rating-modal-overlay.show .rating-modal {
+    transform: scale(1);
+}
+
+.rating-modal-content {
+    padding: 24px;
+    text-align: center;
+}
+
+.rating-modal h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.rating-modal p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.rating-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.rating-btn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-muted);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 16px 20px;
+    text-align: center;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 56px;
+}
+
+.rating-btn:hover {
+    border-color: var(--border-strong);
+    background: var(--bg-secondary);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.rating-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.rating-btn-icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.rate-btn {
+    background: var(--blue-muted);
+    border-color: var(--blue-muted);
+    color: var(--text-primary);
+}
+
+.rate-btn:hover {
+    background: var(--blue-active);
+    border-color: var(--blue-active);
+}
+
+.support-btn {
+    background: var(--orange-muted);
+    border-color: var(--orange-muted);
+    color: var(--text-primary);
+}
+
+.support-btn:hover {
+    background: var(--orange-active);
+    border-color: var(--orange-active);
+}
+
+.later-btn {
+    background: var(--bg-tertiary);
+    border-color: var(--border-subtle);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.later-btn:hover {
+    background: var(--bg-secondary);
+    border-color: var(--border-muted);
+    color: var(--text-primary);
+}
+
 /* Loading states */
 .loading {
     opacity: 0.6;
@@ -776,6 +913,27 @@ body::before {
     .commander-art {
         height: 120px;
     }
+    
+    /* Smaller rating modal on shorter screens */
+    .rating-modal-content {
+        padding: 20px;
+    }
+    
+    .rating-modal h3 {
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+    
+    .rating-modal p {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+    
+    .rating-btn {
+        padding: 14px 16px;
+        min-height: 48px;
+        font-size: 13px;
+    }
 }
 
 @media (max-height: 600px) {
@@ -796,6 +954,31 @@ body::before {
     }
     .commander-art {
         height: 100px;
+    }
+    
+    /* Even smaller rating modal on very short screens */
+    .rating-modal-content {
+        padding: 16px;
+    }
+    
+    .rating-modal h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .rating-modal p {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .rating-btn {
+        padding: 12px 14px;
+        min-height: 44px;
+        font-size: 12px;
+    }
+    
+    .rating-btn-icon {
+        font-size: 16px;
     }
 }
 
@@ -824,6 +1007,12 @@ body::before {
     .commander-art {
         height: 120px;
     }
+    
+    /* Mobile rating modal adjustments */
+    .rating-modal {
+        width: 95%;
+        margin: 16px;
+    }
 }
 
 /* Animation utilities */
@@ -851,6 +1040,11 @@ body::before {
     box-shadow: 0 0 0 2px rgba(74, 107, 167, 0.3);
 }
 
+.rating-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(74, 107, 167, 0.3);
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
     :root {
@@ -866,6 +1060,10 @@ body::before {
     .status-cell {
         border: 1px solid var(--border-muted);
     }
+    
+    .rating-modal {
+        border-width: 2px;
+    }
 }
 
 /* Reduced motion support */
@@ -879,7 +1077,10 @@ body::before {
     .btn,
     .custom-select-trigger,
     .custom-select-dropdown,
-    .custom-select-arrow {
+    .custom-select-arrow,
+    .rating-modal-overlay,
+    .rating-modal,
+    .rating-btn {
         transition: none;
         transform: none;
     }
@@ -887,7 +1088,9 @@ body::before {
     .btn:hover,
     .btn:active,
     .custom-select-trigger:hover,
-    .custom-select-trigger:focus {
+    .custom-select-trigger:focus,
+    .rating-btn:hover,
+    .rating-btn:active {
         transform: none;
     }
 }

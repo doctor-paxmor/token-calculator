@@ -156,6 +156,32 @@
         </div>
     </div>
 
+    <!-- Rating Modal -->
+    <div class="rating-modal-overlay" id="ratingModalOverlay">
+        <div class="rating-modal">
+            <div class="rating-modal-content">
+                <h3>Enjoying MTG Token Calculator?</h3>
+                <p>If this app has been helpful for your Commander games, we'd love a rating! Got suggestions or found bugs? Reviews help us improve the app for everyone.</p>
+                
+                <div class="rating-modal-buttons">
+                    <button class="rating-btn rate-btn" onclick="openPlayStore()">
+                        <span class="rating-btn-icon">⭐</span>
+                        <span>Rate & Review</span>
+                    </button>
+                    
+                    <button class="rating-btn support-btn" onclick="openKofi()">
+                        <span class="rating-btn-icon">☕</span>
+                        <span>Support Dev</span>
+                    </button>
+                    
+                    <button class="rating-btn later-btn" onclick="dismissRatingModal()">
+                        <span>Maybe Later</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden inputs -->
     <input type="checkbox" id="doublingSeasons" style="display: none;">
     <input type="checkbox" id="parallelLives" style="display: none;">
