@@ -961,8 +961,8 @@ function handleAbilityClick(ability, index) {
     const config = gameState.currentCommanderConfig;
     
     // Try commander-specific ability handlers first
-    const abilityName = ability.name.toLowerCase().replace(/[^a-z]/g, '');
-    const handlerName = `use${ability.name.replace(/[^a-zA-Z]/g, '')}Ability`;
+    const abilityName = ability.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const handlerName = `use${ability.name.replace(/[^a-zA-Z]/g, '').toLowerCase().replace(/^./, c => c.toUpperCase())}Ability`;
     
     if (typeof config[handlerName] === 'function') {
         config[handlerName]();
