@@ -8,43 +8,76 @@ MTG Token Calculator helps Commander players manage creature tokens during gamep
 
 ## Key Features
 
-**Pre-configured Commanders**
-- Built-in configurations for popular token-focused commanders
-- Each commander comes with their specific token types and abilities already set up
+**Built-in Commanders**
+- Pre-configured for 7 popular token commanders
+- Each commander has specific token types and abilities already set up
 
 **Token Multiplier System**  
-- Supports various token-doubling effects like Doubling Season, Parallel Lives, and others
-- Automatically calculates final token counts when multiple multipliers are active
+- Automatic calculation with Doubling Season, Parallel Lives, and other token doublers
+- Stack multiple multipliers and see the final count instantly
 - Manual multiplier adjustments for unique scenarios
 
-**Full Customization with Scryfall integration**
-- **Create Custom Commanders** - Build configurations for any commander with their specific token types and abilities
-- **Create Custom Multipliers** - Add any token-doubling cards to customize your experience
-- **Customize Available Options** - Enable/disable which commanders and multipliers appear in your UI
-- **Import/Export Configurations** - Share your custom setups with other players
+**Custom Content**
+- Create custom commanders for any deck
+- Add custom multipliers for any token-affecting card
+- Import/export configurations to share with other players
 
-**Token State Management**
-- Track both untapped and tapped tokens separately
-- Support for multiple token types per commander
-- Automatic game state saving - resume exactly where you left off
-- Reset and clear functions for new games
-
-**Calculator Interface**
-- Touch-optimized buttons for quick token adjustments
-- Clear display of current token counts and active multipliers
-- Real-time calculation updates as you modify multipliers
+**Game State Management**
+- Tracks both untapped and tapped tokens separately
+- Automatic saving - resume games exactly where you left off
+- Each commander remembers its own token counts
 
 ## How It Works
 
-1. Select a pre-built commander or create your own custom configuration
-2. Set up the types of tokens your commander creates
-3. Toggle on any token-doubling effects you have in play
-4. Use the calculator interface to add/remove tokens during gameplay
-5. All multipliers automatically apply to show your final token count
+1. Select your commander (or create a custom one)
+2. Toggle on any token-doubling effects you have in play
+3. Use the calculator to add/remove tokens as you play
+4. The app handles all the multiplication math automatically
 
 ## Example
 
-With token doublers active:
-- Create 1 token → App might show 4, 6, or 8 tokens depending on your active multipliers
-- Stack multiple effects and see the math calculated instantly
-- Game state saves automatically so you can resume later
+Playing with Doubling Season in play:
+- Set up: 1/1 creature tokens + Doubling Season (×2 multiplier)  
+- Create 1 token → App shows 2 tokens total
+- All counts saved automatically for the rest of the game
+
+## Documentation
+
+**📖 [Complete Wiki Guide](https://github.com/doctor-paxmor/token-calculator/wiki)**
+
+- **[Quick Start](https://github.com/doctor-paxmor/token-calculator/wiki/Quick-Start-Guide)** - Get up and running in 5 minutes
+- **[Commander Guide](https://github.com/doctor-paxmor/token-calculator/wiki/Commander-Guide)** - Built-in commanders and selection
+- **[Token Guide](https://github.com/doctor-paxmor/token-calculator/wiki/Token-Guide)** - Token tracking and management
+- **[Multiplier Guide](https://github.com/doctor-paxmor/token-calculator/wiki/Multiplier-Guide)** - How token doublers work
+- **[Custom Commanders](https://github.com/doctor-paxmor/token-calculator/wiki/Custom-Commanders)** - Create your own commanders
+- **[Custom Multipliers](https://github.com/doctor-paxmor/token-calculator/wiki/Custom-Multipliers)** - Add custom token effects
+- **[Settings Guide](https://github.com/doctor-paxmor/token-calculator/wiki/Settings-Guide)** - App configuration
+- **[Troubleshooting](https://github.com/doctor-paxmor/token-calculator/wiki/Troubleshooting)** - Fix common issues
+
+## Built-in Commanders
+
+- **Adrix & Nev, Twincasters**
+- **Baylen, the Haymaker**
+- **Chatterfang, Squirrel General**
+- **Jinnie Fay, Jetmir's Second**
+- **Krenko, Mob Boss**
+- **Mahadi, Emporium Master**
+- **Rinseri, Swift Speaker**
+
+## Built-in Multipliers
+
+- **Doubling Season** (×2) - All tokens
+- **Parallel Lives** (×2) - Creature tokens  
+- **Mondrak** (×2) - All tokens
+- **Anointed Procession** (×2) - Creature tokens
+- **Primal Vigor** (×2) - All tokens
+- **Ojer Taq** (×3) - Creature tokens
+
+## Platform
+
+Built with Capacitor for Android devices.
+
+## Support
+
+- **[Wiki Documentation](https://github.com/doctor-paxmor/token-calculator/wiki)** - Complete guides and tutorials
+- **[Report Issues](https://github.com/doctor-paxmor/token-calculator/issues)** - Bug reports and feature requests
