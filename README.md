@@ -1,4 +1,4 @@
-# MTG Token Calculator v2
+# MTG Token Calculator
 
 **A mobile app for tracking creature tokens during Magic: The Gathering Commander games**
 
