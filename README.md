@@ -34,13 +34,6 @@ MTG Token Calculator helps Commander players manage creature tokens during gamep
 3. Use the calculator to add/remove tokens as you play
 4. The app handles all the multiplication math automatically
 
-## Example
-
-Playing with Doubling Season in play:
-- Set up: 1/1 creature tokens + Doubling Season (×2 multiplier)  
-- Create 1 token → App shows 2 tokens total
-- All counts saved automatically for the rest of the game
-
 ## Documentation
 
 **📖 [Complete Wiki Guide](https://github.com/doctor-paxmor/token-calculator/wiki)**
@@ -72,10 +65,6 @@ Playing with Doubling Season in play:
 - **Anointed Procession** (×2) - Creature tokens
 - **Primal Vigor** (×2) - All tokens
 - **Ojer Taq** (×3) - Creature tokens
-
-## Platform
-
-Built with Capacitor for Android devices.
 
 ## Support
 
