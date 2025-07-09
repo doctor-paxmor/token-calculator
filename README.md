@@ -2,6 +2,12 @@
 
 **A mobile app for tracking creature tokens during Magic: The Gathering Commander games**
 
+## Currently in Closed Testing on the Play Store
+
+You can join the test here: https://play.google.com/apps/testing/com.github.doctorpaxmor.tokencalculator
+You can find the App here: https://play.google.com/store/apps/details?id=com.github.doctorpaxmor.tokencalculator
+
+
 ## What It Does
 
 MTG Token Calculator helps Commander players manage creature tokens during gameplay. Instead of using dice, counters, or paper to track your growing token armies, this calculator handles the math for you.
