@@ -4,7 +4,6 @@
 
 ## Currently in Closed Testing on the Play Store
 
-You can join the test here: https://play.google.com/apps/testing/com.github.doctorpaxmor.tokencalculator
 You can find the App here: https://play.google.com/store/apps/details?id=com.github.doctorpaxmor.tokencalculator
 
 
