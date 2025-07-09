@@ -8,7 +8,7 @@
 - If you want to help me test the app you can join the Google Group here: https://groups.google.com/forum/#!forum/mtg-token-calculator-test/join
 - You can find the App here: https://play.google.com/store/apps/details?id=com.github.doctorpaxmor.tokencalculator
 If you can help test, **please** review the app using the Play Store, it will help me immensely
-<img src="images/review.png" width="250" alt="Rate & Review">
+<img src="images/rate.png" width="250" alt="Rate & Review">
 
 ## What It Does
 MTG Token Calculator helps Commander players manage creature tokens during gameplay. Instead of using dice, counters, or paper to track your growing token armies, this calculator handles the math for you.
