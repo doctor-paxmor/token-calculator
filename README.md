@@ -17,7 +17,7 @@ MTG Token Calculator helps Commander players manage creature tokens during gamep
 ## Key Features
 
 **Built-in Commanders**
-- Pre-configured for 7 popular token commanders
+- Pre-configured with popular token commanders
 - Each commander has specific token types and abilities already set up
 
 **Token Multiplier System**  
