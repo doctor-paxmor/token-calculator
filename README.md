@@ -4,7 +4,9 @@
 
 ## Currently in Closed Testing on the Play Store
 
-- You can sign up to test the App here: https://play.google.com/apps/testing/com.github.doctorpaxmor.tokencalculator
+ Google requires 12+ active testers for 14 days before approving apps for public release. Google's testing system forces you to either collect individual email addresses OR use Google Groups.
+
+- If you want to help me test the app you can join the Google Group here: https://groups.google.com/forum/#!forum/mtg-token-calculator-test/join
 
 - You can find the App here: https://play.google.com/store/apps/details?id=com.github.doctorpaxmor.tokencalculator
 
